@@ -1,6 +1,6 @@
-import audioBufferToWav from "audiobuffer-to-wav";
 import { useState } from "react";
 import { WaveFile } from "wavefile";
+import customAudioBufferToWav from "../utils/customAudioBufferToWav";
 
 
 export default function SoundItem({ id, filename }) {
@@ -23,7 +23,7 @@ export default function SoundItem({ id, filename }) {
                 request.onload = function () {
                     audioContext.decodeAudioData(request.response).then((decodedAudio) => {
                         console.log(decodedAudio);
-                        const wavData = audioBufferToWav(decodedAudio);
+                        const wavData = customAudioBufferToWav(decodedAudio, { monoMix: true });
                         console.log(wavData);
                         // setAudioSrc(URL.createObjectURL(new Blob([wavData])));
                         const wavFile = new WaveFile(new Uint8Array(wavData));
