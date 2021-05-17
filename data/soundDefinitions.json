@@ -1,0 +1,204 @@
+{
+    "totalCapacity": 8000000,
+    "requiredSounds": [
+        {
+            "id": 0,
+            "title": "0",
+            "transcription": "Nula"
+        },
+        {
+            "id": 1,
+            "title": "1",
+            "transcription": "Jedna"
+        },
+        {
+            "id": 2,
+            "title": "2",
+            "transcription": "Dvě"
+        },
+        {
+            "id": 3,
+            "title": "3",
+            "transcription": "Tři"
+        },
+        {
+            "id": 4,
+            "title": "4",
+            "transcription": "Čtyři"
+        },
+        {
+            "id": 5,
+            "title": "5",
+            "transcription": "Pět"
+        },
+        {
+            "id": 6,
+            "title": "6",
+            "transcription": "Šest"
+        },
+        {
+            "id": 7,
+            "title": "7",
+            "transcription": "Sedm"
+        },
+        {
+            "id": 8,
+            "title": "8",
+            "transcription": "Osm"
+        },
+        {
+            "id": 9,
+            "title": "9",
+            "transcription": "Devět"
+        },
+        {
+            "id": 10,
+            "title": "10",
+            "transcription": "Deset"
+        },
+        {
+            "id": 11,
+            "title": "11",
+            "transcription": "Jedenáct"
+        },
+        {
+            "id": 12,
+            "title": "12",
+            "transcription": "Dvanáct"
+        },
+        {
+            "id": 13,
+            "title": "13",
+            "transcription": "Třináct"
+        },
+        {
+            "id": 14,
+            "title": "14",
+            "transcription": "Čtrnáct"
+        },
+        {
+            "id": 15,
+            "title": "15",
+            "transcription": "Patnáct"
+        },
+        {
+            "id": 16,
+            "title": "16",
+            "transcription": "Šestnáct"
+        },
+        {
+            "id": 17,
+            "title": "17",
+            "transcription": "Sedmnáct"
+        },
+        {
+            "id": 18,
+            "title": "18",
+            "transcription": "Osmnáct"
+        },
+        {
+            "id": 19,
+            "title": "19",
+            "transcription": "Devatenáct"
+        },
+        {
+            "id": 20,
+            "title": "20",
+            "transcription": "Dvacet"
+        },
+        {
+            "id": 30,
+            "title": "30",
+            "transcription": "Třicet"
+        },
+        {
+            "id": 40,
+            "title": "40",
+            "transcription": "Čtyřicet"
+        },
+        {
+            "id": 50,
+            "title": "50",
+            "transcription": "Padesát"
+        },
+        {
+            "id": 60,
+            "title": "Intro znělka",
+            "transcription": "..."
+        },
+        {
+            "id": 61,
+            "title": "Outro znělka",
+            "transcription": "..."
+        },
+        {
+            "id": 70,
+            "title": "Hodin",
+            "transcription": "Hodin"
+        },
+        {
+            "id": 71,
+            "title": "Hodina",
+            "transcription": "Hodina"
+        },
+        {
+            "id": 72,
+            "title": "Hodiny",
+            "transcription": "Hodiny"
+        },
+        {
+            "id": 80,
+            "title": "Minut",
+            "transcription": "Minut"
+        },
+        {
+            "id": 81,
+            "title": "Minuta",
+            "transcription": "Minuta"
+        },
+        {
+            "id": 82,
+            "title": "Minuty",
+            "transcription": "Minuty"
+        },
+        {
+            "id": 90,
+            "title": "Prosím pozor!",
+            "transcription": "Prosím pozor!"
+        },
+        {
+            "id": 91,
+            "title": "Čas nastaven",
+            "transcription": "Čas nastaven!"
+        },
+        {
+            "id": 92,
+            "title": "Aktuální čas",
+            "transcription": "Aktuální čas:"
+        },
+        {
+            "id": 93,
+            "title": "Budík nastaven",
+            "transcription": "Budík nastaven!"
+        },
+        {
+            "id": 94,
+            "title": "Čas budíku",
+            "transcription": "Čas budíku:"
+        },
+        {
+            "id": 95,
+            "title": "Ding",
+            "transcription": "..."
+        },
+        {
+            "id": 96,
+            "title": "Dong",
+            "transcription": "..."
+        }
+    ],
+    "additionalSounds": {
+        "idStartsWith": 100,
+        "maxLength": 30
+    }
+}

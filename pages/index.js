@@ -1,12 +1,13 @@
 import Header from '../components/Header';
 import SerialDeviceInfo from '../components/SerialDeviceInfo';
-import SoundItem from '../components/SoundItem';
-import { getAllSounds } from '../lib/sounds';
+import SoundItems from '../components/SoundItems';
+import { getAllSoundDefinitions, getAllSoundSets } from '../lib/sounds';
 
 export async function getStaticProps() {
     return {
         props: {
-            sounds: getAllSounds()
+            soundSets: getAllSoundSets(),
+            soundDefintions: getAllSoundDefinitions()
         }
     };
 }
@@ -17,9 +18,10 @@ export default function Home(props) {
             <Header />
             <SerialDeviceInfo />
 
-            {props.sounds.map((sound) => (
-                <SoundItem {...sound} key={sound.id} />
-            ))}
+            <SoundItems
+                soundSets={props.soundSets}
+                items={props.soundDefintions.requiredSounds}
+            />
         </>
     );
 }
