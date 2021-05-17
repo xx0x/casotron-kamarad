@@ -1,7 +1,7 @@
-import { useState } from "react";
-import { WaveFile } from "wavefile";
-import customAudioBufferToWav from "../utils/customAudioBufferToWav";
-
+import log from 'loglevel';
+import { useState } from 'react';
+import { WaveFile } from 'wavefile';
+import customAudioBufferToWav from '../utils/customAudioBufferToWav';
 
 export default function SoundItem({ id, filename }) {
 
@@ -15,35 +15,38 @@ export default function SoundItem({ id, filename }) {
                 controls
             />
 
-            <button onClick={() => {
-                const audioContext = new window.AudioContext();
-                const request = new XMLHttpRequest();
-                request.open('GET', filename, true);
-                request.responseType = 'arraybuffer';
-                request.onload = function () {
-                    audioContext.decodeAudioData(request.response).then((decodedAudio) => {
-                        console.log(decodedAudio);
-                        const wavData = customAudioBufferToWav(decodedAudio, { monoMix: true });
-                        console.log(wavData);
-                        // setAudioSrc(URL.createObjectURL(new Blob([wavData])));
-                        const wavFile = new WaveFile(new Uint8Array(wavData));
-                        wavFile.toBitDepth(16);
-                        wavFile.toSampleRate(22050);
-                        console.log(wavFile);
+            <button
+                type="button"
+                onClick={() => {
+                    const audioContext = new window.AudioContext();
+                    const request = new XMLHttpRequest();
+                    request.open('GET', filename, true);
+                    request.responseType = 'arraybuffer';
+                    request.onload = () => {
+                        audioContext.decodeAudioData(request.response).then((decodedAudio) => {
+                            log.debug(decodedAudio);
+                            const wavData = customAudioBufferToWav(decodedAudio, { monoMix: true });
+                            log.debug(wavData);
+                            // setAudioSrc(URL.createObjectURL(new Blob([wavData])));
+                            const wavFile = new WaveFile(new Uint8Array(wavData));
+                            wavFile.toBitDepth(16);
+                            wavFile.toSampleRate(22050);
+                            log.debug(wavFile);
 
-                        const convertedWavData = wavFile.toBuffer();
-                        //                         console.log(convertedWavData);
-                        setAudioSrc(URL.createObjectURL(new Blob([convertedWavData])));
-                    }).catch((e) => {
-                        console.log("Error with decoding audio data", e);
-                    });
+                            const convertedWavData = wavFile.toBuffer();
+                            // console.log(convertedWavData);
+                            setAudioSrc(URL.createObjectURL(new Blob([convertedWavData])));
+                        }).catch((e) => {
+                            log.debug('Error with decoding audio data', e);
+                        });
 
-                }
-                request.send();
+                    };
+                    request.send();
 
-            }}>
+                }}
+            >
                 Load default
             </button>
-        </div >
-    )
+        </div>
+    );
 }
