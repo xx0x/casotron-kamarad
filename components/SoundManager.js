@@ -3,6 +3,7 @@ import React from 'react';
 import { WaveFile } from 'wavefile';
 import createSoundFile from '../utils/createSoundFile';
 import customAudioBufferToWav from '../utils/customAudioBufferToWav';
+import retrieveAndDecode from '../utils/retrieveAndDecode';
 import SoundItem from './SoundItem';
 import style from './SoundManager.module.scss';
 
@@ -11,7 +12,8 @@ class SoundManager extends React.Component {
     constructor() {
         super();
         this.state = {
-            requiredSoundsData: {}
+            requiredSoundsData: {},
+            alarmSoundsData: []
         };
         this.updateRequiredSound = this.updateRequiredSound.bind(this);
         this.uploadSounds = this.uploadSounds.bind(this);
@@ -40,43 +42,55 @@ class SoundManager extends React.Component {
                 rawData[id] = wavFile.data.samples;
             }
         });
+        const alarmsStartId = this.props.soundsDefinition.alarms.idStartsWith;
+        this.state.alarmSoundsData.forEach((alarm, index) => {
+            const wavFile = new WaveFile(alarm.soundData);
+            if (wavFile) {
+                wavFile.toBitDepth(16);
+                wavFile.toSampleRate(22050);
+                rawData[alarmsStartId + index] = wavFile.data.samples;
+            }
+        });
         log.warn(createSoundFile(rawData));
     }
 
     loadDefaultSound(id) {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             const soundSet = this.props.availableSoundSets[0];
             if (soundSet) {
                 const defaultSound = soundSet.required.find((x) => x.id === id);
                 if (defaultSound) {
-                    const audioContext = new window.AudioContext();
-                    const request = new XMLHttpRequest();
-                    request.open('GET', defaultSound.filename, true);
-                    request.responseType = 'arraybuffer';
-                    request.onload = () => {
-                        audioContext.decodeAudioData(request.response).then((decodedAudio) => {
-                            const wavData = customAudioBufferToWav(decodedAudio, { monoMix: true });
-                            log.debug('🔊 WAV conversion complete.');
-                            this.updateRequiredSound(id, new Uint8Array(wavData)).then(resolve);
-                        }).catch((e) => {
-                            reject();
-                            log.debug('Error with decoding audio data', e);
-                        });
-                    };
-                    request.send();
+                    retrieveAndDecode(defaultSound.filename).then((wavData) => {
+                        this.updateRequiredSound(id, wavData).then(resolve);
+                    });
                 }
             }
         });
     }
 
     loadAllDefaultSounds() {
+
+        // load required
         const idsToLoad = this.props.soundsDefinition.required.map((item) => (item.id));
-        idsToLoad.reduce((p, id) => p.then(() => this.loadDefaultSound(id)), Promise.resolve()); // initial promise
+        idsToLoad.reduce((p, id) => p.then(() => new Promise((resolve) => { this.loadDefaultSound(id).then(() => setTimeout(resolve, 500)); })), Promise.resolve()); // initial promise
+
+        // load alarms
+        const soundSet = this.props.availableSoundSets[0];
+        if (soundSet && soundSet.alarms) {
+            soundSet.alarms.reduce((p, alarm) => p.then(() => new Promise(
+                (resolve) => retrieveAndDecode(alarm.filename).then((wavData) => {
+                    this.setState((prevState) => ({
+                        alarmSoundsData: [...prevState.alarmSoundsData, { id: alarm.id, soundData: wavData }]
+                    }), () => setTimeout(resolve, 500));
+                })
+            )), Promise.resolve()); // initial promise
+        }
     }
 
     render() {
         return (
             <div className={style.container}>
+                MAIN<br />
                 <div className={style.items}>
                     {this.props.soundsDefinition.required.map((item) => (
                         <SoundItem
@@ -84,6 +98,18 @@ class SoundManager extends React.Component {
                             key={item.id}
                             onLoadDefaultClick={() => this.loadDefaultSound(item.id)}
                             soundData={this.state.requiredSoundsData[item.id]}
+                        />
+                    ))}
+                </div>
+                ADDITIONAL<br />
+                <div className={style.items}>
+                    {this.state.alarmSoundsData.map((item) => (
+                        <SoundItem
+                            {...item}
+                            key={item.id}
+                            onClearClick={() => this.setState((prevState) => ({ alarmSoundsData: prevState.alarmSoundsData.filter((x) => x.id !== item.id) }))}
+                            // onLoadDefaultClick={() => this.loadDefaultSound(item.id)}
+                            soundData={item.soundData}
                         />
                     ))}
                 </div>

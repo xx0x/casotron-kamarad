@@ -197,7 +197,7 @@
             "transcription": "..."
         }
     ],
-    "additional": {
+    "alarms": {
         "idStartsWith": 100,
         "maxLength": 30
     }
