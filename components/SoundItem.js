@@ -1,16 +1,14 @@
 import { useEffect, useState } from 'react';
 import style from './SoundItem.module.scss';
+import FilePickerButton from './ui/FilePickerButton';
 
 export default function SoundItem({
-    id, title, transcription, soundData, onLoadDefaultClick, onClearClick
+    id, title, transcription, soundData, onLoadDefaultClick, onClearClick, onReplaceSubmit
 }) {
 
-    const [audioSrc, setAudioSrc] = useState(null);
-
+    const [audioObj, setAudioObj] = useState(null);
     useEffect(() => {
-        if (soundData) {
-            setAudioSrc(URL.createObjectURL(new Blob([soundData])));
-        }
+        setAudioObj(null);
     }, [soundData]);
 
     return (
@@ -18,12 +16,6 @@ export default function SoundItem({
             <h3>{title || id}</h3>
             {transcription &&
                 <p><em>{transcription}</em></p>
-            }
-            {audioSrc &&
-                <audio
-                    src={audioSrc}
-                    controls
-                />
             }
             {onLoadDefaultClick &&
                 <button
@@ -41,6 +33,31 @@ export default function SoundItem({
                     Clear
                 </button>
             }
+            {onReplaceSubmit &&
+                <FilePickerButton
+                    accept="audio/*"
+                    onChange={onReplaceSubmit}
+                >
+                    {soundData ? 'Replace' : 'Upload'}
+                </FilePickerButton>
+            }
+            <button
+                type="button"
+                disabled={!soundData}
+                onClick={() => {
+                    if (audioObj) {
+                        audioObj.pause();
+                        audioObj.currentTime = 0;
+                        audioObj.play();
+                    } else {
+                        const ao = new Audio(URL.createObjectURL(new Blob([soundData])));
+                        ao.play();
+                        setAudioObj(ao);
+                    }
+                }}
+            >
+                Play
+            </button>
         </div>
     );
 }

@@ -1,4 +1,4 @@
-
+/* eslint-disable */
 function encodeWAV(samples, format, sampleRate, numChannels, bitDepth) {
     var bytesPerSample = bitDepth / 8
     var blockAlign = numChannels * bytesPerSample

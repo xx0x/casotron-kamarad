@@ -2,10 +2,12 @@ import log from 'loglevel';
 import React from 'react';
 import { WaveFile } from 'wavefile';
 import createSoundFile from '../utils/createSoundFile';
-import customAudioBufferToWav from '../utils/customAudioBufferToWav';
+import removeExtension from '../utils/removeExtension';
 import retrieveAndDecode from '../utils/retrieveAndDecode';
+import submitAndDecode from '../utils/submitAndDecode';
 import SoundItem from './SoundItem';
 import style from './SoundManager.module.scss';
+import FilePickerButton from './ui/FilePickerButton';
 
 class SoundManager extends React.Component {
 
@@ -72,7 +74,7 @@ class SoundManager extends React.Component {
 
         // load required
         const idsToLoad = this.props.soundsDefinition.required.map((item) => (item.id));
-        idsToLoad.reduce((p, id) => p.then(() => new Promise((resolve) => { this.loadDefaultSound(id).then(() => setTimeout(resolve, 500)); })), Promise.resolve()); // initial promise
+        idsToLoad.reduce((p, id) => p.then(() => this.loadDefaultSound(id)), Promise.resolve()); // initial promise
 
         // load alarms
         const soundSet = this.props.availableSoundSets[0];
@@ -81,7 +83,7 @@ class SoundManager extends React.Component {
                 (resolve) => retrieveAndDecode(alarm.filename).then((wavData) => {
                     this.setState((prevState) => ({
                         alarmSoundsData: [...prevState.alarmSoundsData, { id: alarm.id, soundData: wavData }]
-                    }), () => setTimeout(resolve, 500));
+                    }), resolve);
                 })
             )), Promise.resolve()); // initial promise
         }
@@ -96,6 +98,11 @@ class SoundManager extends React.Component {
                         <SoundItem
                             {...item}
                             key={item.id}
+                            onReplaceSubmit={(file) => {
+                                submitAndDecode(file).then((wavData) => {
+                                    this.updateRequiredSound(item.id, wavData);
+                                });
+                            }}
                             onLoadDefaultClick={() => this.loadDefaultSound(item.id)}
                             soundData={this.state.requiredSoundsData[item.id]}
                         />
@@ -108,11 +115,26 @@ class SoundManager extends React.Component {
                             {...item}
                             key={item.id}
                             onClearClick={() => this.setState((prevState) => ({ alarmSoundsData: prevState.alarmSoundsData.filter((x) => x.id !== item.id) }))}
-                            // onLoadDefaultClick={() => this.loadDefaultSound(item.id)}
                             soundData={item.soundData}
                         />
                     ))}
                 </div>
+                <FilePickerButton
+                    className="button"
+                    accept="audio/*"
+                    onChange={(file) => {
+                        submitAndDecode(file).then((wavData) => {
+                            this.setState((prevState) => ({
+                                alarmSoundsData: [...prevState.alarmSoundsData, { id: removeExtension(file.name), soundData: wavData }]
+                            }));
+                        });
+                    }}
+                >
+                    Add own alarm sound
+                </FilePickerButton>
+
+                <br />
+                <br />
                 <button type="button" onClick={this.loadAllDefaultSounds}>
                     load all default sounds
                 </button>

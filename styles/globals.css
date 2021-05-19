@@ -16,3 +16,10 @@ a {
 *:after {
     box-sizing: border-box;
 }
+
+.button {
+    display: inline-block;
+    border: 2px outset #333;
+    background-color: #ddd;
+    padding: 5px;
+}
