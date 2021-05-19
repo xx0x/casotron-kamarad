@@ -21,6 +21,7 @@ class SoundManager extends React.Component {
         this.uploadSounds = this.uploadSounds.bind(this);
         this.loadDefaultSound = this.loadDefaultSound.bind(this);
         this.loadAllDefaultSounds = this.loadAllDefaultSounds.bind(this);
+        this.addAlarmSound = this.addAlarmSound.bind(this);
     }
 
     updateRequiredSound(id, data) {
@@ -30,6 +31,14 @@ class SoundManager extends React.Component {
                     ...(prevState.requiredSoundsData || {}),
                     [id]: data
                 }
+            }), resolve);
+        });
+    }
+
+    addAlarmSound(id, wavData) {
+        return new Promise((resolve) => {
+            this.setState((prevState) => ({
+                alarmSoundsData: [...prevState.alarmSoundsData, { id, soundData: wavData }]
             }), resolve);
         });
     }
@@ -71,7 +80,6 @@ class SoundManager extends React.Component {
     }
 
     loadAllDefaultSounds() {
-
         // load required
         const idsToLoad = this.props.soundsDefinition.required.map((item) => (item.id));
         idsToLoad.reduce((p, id) => p.then(() => this.loadDefaultSound(id)), Promise.resolve()); // initial promise
@@ -81,9 +89,7 @@ class SoundManager extends React.Component {
         if (soundSet && soundSet.alarms) {
             soundSet.alarms.reduce((p, alarm) => p.then(() => new Promise(
                 (resolve) => retrieveAndDecode(alarm.filename).then((wavData) => {
-                    this.setState((prevState) => ({
-                        alarmSoundsData: [...prevState.alarmSoundsData, { id: alarm.id, soundData: wavData }]
-                    }), resolve);
+                    this.addAlarmSound(alarm.id, wavData).then(resolve);
                 })
             )), Promise.resolve()); // initial promise
         }
@@ -123,11 +129,7 @@ class SoundManager extends React.Component {
                     className="button"
                     accept="audio/*"
                     onChange={(file) => {
-                        submitAndDecode(file).then((wavData) => {
-                            this.setState((prevState) => ({
-                                alarmSoundsData: [...prevState.alarmSoundsData, { id: removeExtension(file.name), soundData: wavData }]
-                            }));
-                        });
+                        submitAndDecode(file).then((wavData) => this.addAlarmSound(removeExtension(file.name), wavData));
                     }}
                 >
                     Add own alarm sound
