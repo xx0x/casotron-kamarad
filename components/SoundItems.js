@@ -47,29 +47,46 @@ export default function SoundItems(props) {
         }
     };
 
+    if (!props.sortable) {
+        return (
+            <div className={props.className}>
+                {props.items.map((item) => (
+                    <SoundItem
+                        {...item}
+                        key={item.id}
+                        onReplaceSubmit={(file) => props.onItemReplaceSubmit(item, file)}
+                        onLoadDefaultClick={() => props.onItemLoadDefaultClick(item)}
+                    />
+                ))}
+            </div>
+        );
+    }
+
     return (
         <div className={props.className}>
-            <DndContext
-                sensors={sensors}
-                collisionDetection={closestCenter}
-                onDragEnd={handleDragEnd}
-            >
-                <SortableContext
-                    items={props.items}
-                    strategy={rectSortingStrategy}
+            {props.items.length > 0 &&
+                <DndContext
+                    sensors={sensors}
+                    collisionDetection={closestCenter}
+                    onDragEnd={handleDragEnd}
                 >
-                    {props.items.map((item) => (
-                        <SortableSoundItem
-                            key={item.id}
-                            id={item.id}
-                            innerProps={{
-                                ...item,
-                                onClearClick: () => props.onItemClearClick(item)
-                            }}
-                        />
-                    ))}
-                </SortableContext>
-            </DndContext>
+                    <SortableContext
+                        items={props.items}
+                        strategy={rectSortingStrategy}
+                    >
+                        {props.items.map((item) => (
+                            <SortableSoundItem
+                                key={item.id}
+                                id={item.id}
+                                innerProps={{
+                                    ...item,
+                                    onClearClick: () => props.onItemClearClick(item)
+                                }}
+                            />
+                        ))}
+                    </SortableContext>
+                </DndContext>
+            }
         </div>
     );
 }

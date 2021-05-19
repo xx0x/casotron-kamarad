@@ -18,6 +18,8 @@ const SoundItem = forwardRef((props, ref) => {
             {...props.attributes}
             {...props.listeners}
             onMouseDown={props.onMouseDown}
+            role="button"
+            tabIndex="0"
         >
             <h3>{props.title || props.id}</h3>
             {props.transcription &&

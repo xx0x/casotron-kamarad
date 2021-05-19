@@ -140,22 +140,19 @@ class SoundManager extends React.Component {
                 </FilePickerButton>
                 <br /><br /><br /><br />
                 MAIN<br />
-                <div className={style.items}>
-                    {this.props.soundsDefinition.required.map((item) => (
-                        <SoundItem
-                            {...item}
-                            key={item.id}
-                            onReplaceSubmit={(file) => {
-                                submitAndDecode(file).then((wavData) => {
-                                    this.updateRequiredSound(item.id, wavData);
-                                });
-                            }}
-                            onLoadDefaultClick={() => this.loadDefaultSound(item.id)}
-                            soundData={this.state.requiredSoundsData[item.id]}
-                        />
-                    ))}
-                </div>
-
+                <SoundItems
+                    className={style.items}
+                    items={this.props.soundsDefinition.required.map((item) => ({
+                        ...item,
+                        soundData: this.state.requiredSoundsData[item.id]
+                    }))}
+                    onItemReplaceSubmit={(item, file) => {
+                        submitAndDecode(file).then((wavData) => {
+                            this.updateRequiredSound(item.id, wavData);
+                        });
+                    }}
+                    onItemLoadDefaultClick={(item) => this.loadDefaultSound(item.id)}
+                />
             </div>
         );
     }
