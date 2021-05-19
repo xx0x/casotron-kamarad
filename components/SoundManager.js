@@ -1,3 +1,5 @@
+import { DndContext } from '@dnd-kit/core';
+import { SortableContext } from '@dnd-kit/sortable';
 import log from 'loglevel';
 import React from 'react';
 import { WaveFile } from 'wavefile';
@@ -6,6 +8,7 @@ import removeExtension from '../utils/removeExtension';
 import retrieveAndDecode from '../utils/retrieveAndDecode';
 import submitAndDecode from '../utils/submitAndDecode';
 import SoundItem from './SoundItem';
+import SoundItems from './SoundItems';
 import style from './SoundManager.module.scss';
 import FilePickerButton from './ui/FilePickerButton';
 
@@ -98,6 +101,39 @@ class SoundManager extends React.Component {
     render() {
         return (
             <div className={style.container}>
+                <br />
+                <br />
+                <br />
+                <br />
+                <button type="button" onClick={this.loadAllDefaultSounds}>
+                    load all default sounds
+                </button>
+                <button type="button" disabled={Object.values(this.state.requiredSoundsData).length === 0} onClick={this.uploadSounds}>
+                    upload sounds
+                </button>
+
+                <br />
+                <br />
+
+                ALARMS <br />
+                <SoundItems
+                    className={style.items}
+                    items={this.state.alarmSoundsData}
+                    onItemClearClick={(item) => {
+                        this.setState((prevState) => ({ alarmSoundsData: prevState.alarmSoundsData.filter((x) => x.id !== item.id) }));
+                    }}
+                />
+
+                <FilePickerButton
+                    className="button"
+                    accept="audio/*"
+                    onChange={(file) => {
+                        submitAndDecode(file).then((wavData) => this.addAlarmSound(removeExtension(file.name), wavData));
+                    }}
+                >
+                    Add own alarm sound
+                </FilePickerButton>
+                <br /><br /><br /><br />
                 MAIN<br />
                 <div className={style.items}>
                     {this.props.soundsDefinition.required.map((item) => (
@@ -114,35 +150,7 @@ class SoundManager extends React.Component {
                         />
                     ))}
                 </div>
-                ADDITIONAL<br />
-                <div className={style.items}>
-                    {this.state.alarmSoundsData.map((item) => (
-                        <SoundItem
-                            {...item}
-                            key={item.id}
-                            onClearClick={() => this.setState((prevState) => ({ alarmSoundsData: prevState.alarmSoundsData.filter((x) => x.id !== item.id) }))}
-                            soundData={item.soundData}
-                        />
-                    ))}
-                </div>
-                <FilePickerButton
-                    className="button"
-                    accept="audio/*"
-                    onChange={(file) => {
-                        submitAndDecode(file).then((wavData) => this.addAlarmSound(removeExtension(file.name), wavData));
-                    }}
-                >
-                    Add own alarm sound
-                </FilePickerButton>
 
-                <br />
-                <br />
-                <button type="button" onClick={this.loadAllDefaultSounds}>
-                    load all default sounds
-                </button>
-                <button type="button" disabled={Object.values(this.state.requiredSoundsData).length === 0} onClick={this.uploadSounds}>
-                    upload sounds
-                </button>
             </div>
         );
     }
