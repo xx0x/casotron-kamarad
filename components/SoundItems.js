@@ -1,19 +1,71 @@
-import { DndContext } from '@dnd-kit/core';
-import { SortableContext } from '@dnd-kit/sortable';
+import {
+    closestCenter,
+    DndContext,
+    MouseSensor,
+    useSensor,
+    useSensors
+} from '@dnd-kit/core';
+import {
+    rectSortingStrategy, SortableContext,
+    useSortable
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import React from 'react';
 import SoundItem from './SoundItem';
+
+function SortableSoundItem(props) {
+    const {
+        attributes,
+        listeners,
+        setNodeRef,
+        transform,
+        transition,
+    } = useSortable({ id: props.id });
+
+    const style = {
+        transform: CSS.Transform.toString(transform),
+        transition
+    };
+
+    return (
+        <SoundItem {...props.innerProps} ref={setNodeRef} style={style} {...attributes} {...listeners}>
+            {props.children}
+        </SoundItem>
+    );
+}
 
 export default function SoundItems(props) {
 
+    const sensors = useSensors(
+        useSensor(MouseSensor)
+    );
+
+    const handleDragEnd = (event) => {
+        const { active, over } = event;
+        if (active.id !== over.id) {
+            props.onMove(active.id, over.id);
+        }
+    };
+
     return (
         <div className={props.className}>
-            <DndContext>
-                <SortableContext items={props.items}>
+            <DndContext
+                sensors={sensors}
+                collisionDetection={closestCenter}
+                onDragEnd={handleDragEnd}
+            >
+                <SortableContext
+                    items={props.items}
+                    strategy={rectSortingStrategy}
+                >
                     {props.items.map((item) => (
-                        <SoundItem
-                            {...item}
+                        <SortableSoundItem
                             key={item.id}
-                            onClearClick={() => props.onItemClearClick(item)}
-                            soundData={item.soundData}
+                            id={item.id}
+                            innerProps={{
+                                ...item,
+                                onClearClick: () => props.onItemClearClick(item)
+                            }}
                         />
                     ))}
                 </SortableContext>

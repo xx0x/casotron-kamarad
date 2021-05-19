@@ -1,56 +1,62 @@
-import { useEffect, useState } from 'react';
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+import { forwardRef, useEffect, useState } from 'react';
 import style from './SoundItem.module.scss';
 import FilePickerButton from './ui/FilePickerButton';
 
-export default function SoundItem({
-    id, title, transcription, soundData, onLoadDefaultClick, onClearClick, onReplaceSubmit
-}) {
+const SoundItem = forwardRef((props, ref) => {
 
     const [audioObj, setAudioObj] = useState(null);
     useEffect(() => {
         setAudioObj(null);
-    }, [soundData]);
-
+    }, [props.soundData]);
     return (
-        <div key={id} className={style.container}>
-            <h3>{title || id}</h3>
-            {transcription &&
-                <p><em>{transcription}</em></p>
+        <div
+            key={props.id}
+            ref={ref}
+            className={style.container}
+            style={props.style}
+            {...props.attributes}
+            {...props.listeners}
+            onMouseDown={props.onMouseDown}
+        >
+            <h3>{props.title || props.id}</h3>
+            {props.transcription &&
+                <p><em>{props.transcription}</em></p>
             }
-            {onLoadDefaultClick &&
+            {props.onLoadDefaultClick &&
                 <button
                     type="button"
-                    onClick={onLoadDefaultClick}
+                    onClick={props.onLoadDefaultClick}
                 >
                     Load default
                 </button>
             }
-            {onClearClick &&
+            {props.onClearClick &&
                 <button
                     type="button"
-                    onClick={onClearClick}
+                    onClick={props.onClearClick}
                 >
                     Clear
                 </button>
             }
-            {onReplaceSubmit &&
+            {props.onReplaceSubmit &&
                 <FilePickerButton
                     accept="audio/*"
-                    onChange={onReplaceSubmit}
+                    onChange={props.onReplaceSubmit}
                 >
-                    {soundData ? 'Replace' : 'Upload'}
+                    {props.soundData ? 'Replace' : 'Upload'}
                 </FilePickerButton>
             }
             <button
                 type="button"
-                disabled={!soundData}
+                disabled={!props.soundData}
                 onClick={() => {
                     if (audioObj) {
                         audioObj.pause();
                         audioObj.currentTime = 0;
                         audioObj.play();
                     } else {
-                        const ao = new Audio(URL.createObjectURL(new Blob([soundData])));
+                        const ao = new Audio(URL.createObjectURL(new Blob([props.soundData])));
                         ao.play();
                         setAudioObj(ao);
                     }
@@ -60,4 +66,6 @@ export default function SoundItem({
             </button>
         </div>
     );
-}
+});
+
+export default SoundItem;

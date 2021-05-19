@@ -1,8 +1,8 @@
-import { DndContext } from '@dnd-kit/core';
-import { SortableContext } from '@dnd-kit/sortable';
+import { arrayMove } from '@dnd-kit/sortable';
 import log from 'loglevel';
 import React from 'react';
 import { WaveFile } from 'wavefile';
+import arrayMoveById from '../utils/arrayMoveById';
 import createSoundFile from '../utils/createSoundFile';
 import removeExtension from '../utils/removeExtension';
 import retrieveAndDecode from '../utils/retrieveAndDecode';
@@ -119,6 +119,11 @@ class SoundManager extends React.Component {
                 <SoundItems
                     className={style.items}
                     items={this.state.alarmSoundsData}
+                    onMove={(oldId, newId) => {
+                        this.setState((prevState) => ({
+                            alarmSoundsData: arrayMoveById(prevState.alarmSoundsData, oldId, newId)
+                        }));
+                    }}
                     onItemClearClick={(item) => {
                         this.setState((prevState) => ({ alarmSoundsData: prevState.alarmSoundsData.filter((x) => x.id !== item.id) }));
                     }}

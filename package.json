@@ -10,6 +10,8 @@
   "dependencies": {
     "@dnd-kit/core": "^3.0.3",
     "@dnd-kit/sortable": "^3.0.1",
+    "@dnd-kit/utilities": "^2.0.0",
+    "array-move": "^3.0.1",
     "audiobuffer-to-wav": "^1.0.0",
     "eslint": "^7.18.0",
     "eslint-config-airbnb": "^18.2.1",
