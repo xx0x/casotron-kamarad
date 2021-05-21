@@ -1,7 +1,16 @@
 .container {
-    width: 200px;
-    border: 1px solid #ddd;
-    margin: 5px;
+    background-color: #fff;
+    padding: 10px;
     position: relative;
     overflow: hidden;
+}
+
+.sortable {
+    cursor: move;
+}
+
+.title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }

@@ -1,12 +1,15 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 
+import { Button } from 'react95';
+
 export default function FilePickerButton({
-    className, children, onChange, accept, multiple
+    children, onChange, accept, multiple, buttonProps
 }) {
     return (
-        <label
-            className={className || 'button'}
+        <Button
+            as="label"
             style={{ position: 'relative', overflow: 'hidden' }}
+            {...buttonProps}
         >
             <input
                 type="file"
@@ -30,6 +33,6 @@ export default function FilePickerButton({
                 }}
             />
             {children}
-        </label>
+        </Button>
     );
 }

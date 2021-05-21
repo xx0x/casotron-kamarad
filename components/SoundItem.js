@@ -1,5 +1,6 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import { forwardRef, useEffect, useState } from 'react';
+import { Button } from 'react95';
 import style from './SoundItem.module.scss';
 import FilePickerButton from './ui/FilePickerButton';
 
@@ -13,7 +14,7 @@ const SoundItem = forwardRef((props, ref) => {
         <div
             key={props.id}
             ref={ref}
-            className={style.container}
+            className={style.container + (props.sortable ? (` ${style.sortable}`) : '')}
             style={props.style}
             {...props.attributes}
             {...props.listeners}
@@ -21,36 +22,33 @@ const SoundItem = forwardRef((props, ref) => {
             role="button"
             tabIndex="0"
         >
-            <h3>{props.title || props.id}</h3>
+            <h3 className={style.title}>{props.title || props.id}</h3>
             {props.transcription &&
                 <p><em>{props.transcription}</em></p>
             }
             {props.onLoadDefaultClick &&
-                <button
-                    type="button"
+                <Button
                     onClick={props.onLoadDefaultClick}
                 >
-                    Load default
-                </button>
+                    🔄
+                </Button>
             }
             {props.onClearClick &&
-                <button
-                    type="button"
+                <Button
                     onClick={props.onClearClick}
                 >
-                    Clear
-                </button>
+                    🚮
+                </Button>
             }
             {props.onReplaceSubmit &&
                 <FilePickerButton
                     accept="audio/*"
                     onChange={props.onReplaceSubmit}
                 >
-                    {props.soundData ? 'Replace' : 'Upload'}
+                    {props.soundData ? '📂' : '📂'}
                 </FilePickerButton>
             }
-            <button
-                type="button"
+            <Button
                 disabled={!props.soundData}
                 onClick={() => {
                     if (audioObj) {
@@ -64,8 +62,8 @@ const SoundItem = forwardRef((props, ref) => {
                     }
                 }}
             >
-                Play
-            </button>
+                ▶
+            </Button>
         </div>
     );
 });

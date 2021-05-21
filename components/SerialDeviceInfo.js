@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import log from 'loglevel';
+import { Button } from 'react95';
 
 const BAUDRATE = 115200;
 
@@ -14,9 +15,9 @@ function SerialDeviceInfo() {
                     Device connected
                 </div>
             }
-            <button
+            <Button
                 onClick={() => {
-                    
+
                     if (!navigator.serial) {
                         log.error('🔌 Serial interface not available.');
                         return;
@@ -37,10 +38,9 @@ function SerialDeviceInfo() {
                         log.warn('🔌 No port selected.');
                     });
                 }}
-                type="button"
             >
                 Connect to a device
-            </button>
+            </Button>
         </div>
     );
 }
