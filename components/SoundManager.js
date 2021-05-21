@@ -9,6 +9,8 @@ import createSoundFile from '../utils/createSoundFile';
 import removeExtension from '../utils/removeExtension';
 import retrieveAndDecode from '../utils/retrieveAndDecode';
 import submitAndDecode from '../utils/submitAndDecode';
+import Icon from './icons/Icon';
+import Icons from './icons/Icons';
 import SoundItems from './SoundItems';
 import style from './SoundManager.module.scss';
 import FilePickerButton from './ui/FilePickerButton';
@@ -157,7 +159,7 @@ class SoundManager extends React.Component {
                     </Window>
                     <Window>
                         <WindowHeader>
-                            🤓
+                            <Icon icon={Icons.Voice} />
                             Voice
                         </WindowHeader>
                         <WindowContent>

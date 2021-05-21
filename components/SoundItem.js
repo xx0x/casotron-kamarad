@@ -1,6 +1,8 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import { forwardRef, useEffect, useState } from 'react';
 import { Button } from 'react95';
+import Icon from './icons/Icon';
+import Icons from './icons/Icons';
 import style from './SoundItem.module.scss';
 import FilePickerButton from './ui/FilePickerButton';
 
@@ -45,7 +47,10 @@ const SoundItem = forwardRef((props, ref) => {
                     accept="audio/*"
                     onChange={props.onReplaceSubmit}
                 >
-                    {props.soundData ? '📂' : '📂'}
+                    {
+                        // props.soundData ? '📂' : '📂'
+                    }
+                    <Icon icon={Icons.FolderOpen} />
                 </FilePickerButton>
             }
             <Button
