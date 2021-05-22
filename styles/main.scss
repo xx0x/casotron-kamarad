@@ -1,4 +1,17 @@
+@import './common';
+@import './reset';
+@import './fonts';
+
+html,
 body {
-    background-color: #008080;
-    padding: 25px;
+    color: $text-color;
+    background-color: $background-color;
+    font-weight: $font-weight;
+    line-height: $line-height;
+    font-family: $font-family;
+}
+
+body {
+    padding: $base-padding;
+    padding-top: $appbar-height + $base-padding;
 }

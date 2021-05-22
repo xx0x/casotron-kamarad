@@ -1,0 +1,26 @@
+@import '../../styles/common.scss';
+
+.container {
+    font-size: 13px;
+    background-color: transparent;
+    color: $text-color;
+    padding: 0.8em 1em;
+    text-decoration: none;
+    border: 2px solid $text-color;
+    font-family: $header-font-family;
+    font-weight: $header-font-weight;
+    line-height: $header-line-height;
+    cursor: pointer;
+    text-transform: uppercase;
+    display: inline-block;
+}
+
+.primary {
+    color: $primary-color;
+    border-color: $primary-color;
+}
+
+.secondary {
+    color: $secondary-color;
+    border-color: $secondary-color;
+}

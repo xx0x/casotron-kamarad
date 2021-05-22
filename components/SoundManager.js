@@ -1,18 +1,15 @@
 import log from 'loglevel';
 import React from 'react';
-import {
-    Button, Toolbar, Window, WindowContent, WindowHeader
-} from 'react95';
 import { WaveFile } from 'wavefile';
 import arrayMoveById from '../utils/arrayMoveById';
 import createSoundFile from '../utils/createSoundFile';
 import removeExtension from '../utils/removeExtension';
 import retrieveAndDecode from '../utils/retrieveAndDecode';
 import submitAndDecode from '../utils/submitAndDecode';
-import Icon from './icons/Icon';
-import Icons from './icons/Icons';
 import SoundItems from './SoundItems';
 import style from './SoundManager.module.scss';
+import Box from './ui/Box';
+import Button from './ui/Button';
 import FilePickerButton from './ui/FilePickerButton';
 
 class SoundManager extends React.Component {
@@ -104,10 +101,6 @@ class SoundManager extends React.Component {
     render() {
         return (
             <div className={style.container}>
-                <br />
-                <br />
-                <br />
-                <br />
                 <Button
                     onClick={this.loadAllDefaultSounds}
                 >
@@ -122,62 +115,53 @@ class SoundManager extends React.Component {
 
                 <div className={style.windows}>
 
-                    <Window>
-                        <WindowHeader>
-                            🎵
-                            Alarms
-                        </WindowHeader>
-                        <Toolbar>
-                            <FilePickerButton
-                                buttonProps={{
-                                    variant: 'menu',
-                                    size: 'sm'
-                                }}
-                                accept="audio/*"
-                                onChange={(file) => {
-                                    submitAndDecode(file).then((wavData) => this.addAlarmSound(removeExtension(file.name), wavData));
-                                }}
-                            >
-                                Add new sound
-                            </FilePickerButton>
-                        </Toolbar>
-                        <WindowContent>
-                            <SoundItems
-                                className={style.items}
-                                items={this.state.alarmSoundsData}
-                                sortable
-                                onMove={(oldId, newId) => {
-                                    this.setState((prevState) => ({
-                                        alarmSoundsData: arrayMoveById(prevState.alarmSoundsData, oldId, newId)
-                                    }));
-                                }}
-                                onItemClearClick={(item) => {
-                                    this.setState((prevState) => ({ alarmSoundsData: prevState.alarmSoundsData.filter((x) => x.id !== item.id) }));
-                                }}
-                            />
-                        </WindowContent>
-                    </Window>
-                    <Window>
-                        <WindowHeader>
-                            <Icon icon={Icons.Voice} />
-                            Voice
-                        </WindowHeader>
-                        <WindowContent>
-                            <SoundItems
-                                className={style.items}
-                                items={this.props.soundsDefinition.required.map((item) => ({
-                                    ...item,
-                                    soundData: this.state.requiredSoundsData[item.id]
-                                }))}
-                                onItemReplaceSubmit={(item, file) => {
-                                    submitAndDecode(file).then((wavData) => {
-                                        this.updateRequiredSound(item.id, wavData);
-                                    });
-                                }}
-                                onItemLoadDefaultClick={(item) => this.loadDefaultSound(item.id)}
-                            />
-                        </WindowContent>
-                    </Window>
+                    <Box
+                        title="Alarms"
+                    >
+                        <FilePickerButton
+                            buttonProps={{
+                                variant: 'menu',
+                                size: 'sm'
+                            }}
+                            accept="audio/*"
+                            onChange={(file) => {
+                                submitAndDecode(file).then((wavData) => this.addAlarmSound(removeExtension(file.name), wavData));
+                            }}
+                        >
+                            Add new sound
+                        </FilePickerButton>
+                        <SoundItems
+                            className={style.items}
+                            items={this.state.alarmSoundsData}
+                            sortable
+                            onMove={(oldId, newId) => {
+                                this.setState((prevState) => ({
+                                    alarmSoundsData: arrayMoveById(prevState.alarmSoundsData, oldId, newId)
+                                }));
+                            }}
+                            onItemClearClick={(item) => {
+                                this.setState((prevState) => ({ alarmSoundsData: prevState.alarmSoundsData.filter((x) => x.id !== item.id) }));
+                            }}
+                        />
+
+                    </Box>
+                    <Box
+                        title="Voice"
+                    >
+                        <SoundItems
+                            className={style.items}
+                            items={this.props.soundsDefinition.required.map((item) => ({
+                                ...item,
+                                soundData: this.state.requiredSoundsData[item.id]
+                            }))}
+                            onItemReplaceSubmit={(item, file) => {
+                                submitAndDecode(file).then((wavData) => {
+                                    this.updateRequiredSound(item.id, wavData);
+                                });
+                            }}
+                            onItemLoadDefaultClick={(item) => this.loadDefaultSound(item.id)}
+                        />
+                    </Box>
                 </div>
             </div>
         );

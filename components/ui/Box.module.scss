@@ -1,0 +1,17 @@
+@import '../../styles/common.scss';
+
+.container {
+    border: 2px solid $box-border-color;
+    background-color: $box-background-color;
+}
+
+.header {
+    background-color: $box-border-color;
+    color: #fff;
+    padding: 0.5em 1em;
+    text-transform: uppercase;
+}
+
+.content {
+    color: #fff;
+}

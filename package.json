@@ -11,9 +11,9 @@
     "@dnd-kit/core": "^3.0.3",
     "@dnd-kit/sortable": "^3.0.1",
     "@dnd-kit/utilities": "^2.0.0",
-    "@react95/icons": "^2.0.3",
     "array-move": "^3.0.1",
     "audiobuffer-to-wav": "^1.0.0",
+    "classnames": "^2.3.1",
     "eslint": "^7.18.0",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-plugin-import": "^2.22.1",
@@ -27,9 +27,7 @@
     "path": "^0.12.7",
     "react": "17.0.2",
     "react-dom": "17.0.2",
-    "react95": "^3.7.1",
     "sass": "^1.32.13",
-    "styled-components": "^5.3.0",
     "uuid": "^8.3.2",
     "wavefile": "^11.0.0"
   }

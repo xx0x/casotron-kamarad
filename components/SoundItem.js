@@ -1,9 +1,9 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import { forwardRef, useEffect, useState } from 'react';
-import { Button } from 'react95';
 import Icon from './icons/Icon';
 import Icons from './icons/Icons';
 import style from './SoundItem.module.scss';
+import Button from './ui/Button';
 import FilePickerButton from './ui/FilePickerButton';
 
 const SoundItem = forwardRef((props, ref) => {
@@ -24,9 +24,9 @@ const SoundItem = forwardRef((props, ref) => {
             role="button"
             tabIndex="0"
         >
-            <h3 className={style.title}>{props.title || props.id}</h3>
+            <div className={style.title}>{props.title || props.id}</div>
             {props.transcription &&
-                <p><em>{props.transcription}</em></p>
+                <div className={style.transcription}>„{props.transcription}“</div>
             }
             {props.onLoadDefaultClick &&
                 <Button
@@ -50,7 +50,7 @@ const SoundItem = forwardRef((props, ref) => {
                     {
                         // props.soundData ? '📂' : '📂'
                     }
-                    <Icon icon={Icons.FolderOpen} />
+                    📂
                 </FilePickerButton>
             }
             <Button

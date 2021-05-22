@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import log from 'loglevel';
-import { Button } from 'react95';
+import Button from './ui/Button';
 
 const BAUDRATE = 115200;
 
@@ -16,6 +16,7 @@ function SerialDeviceInfo() {
                 </div>
             }
             <Button
+                primary
                 onClick={() => {
 
                     if (!navigator.serial) {

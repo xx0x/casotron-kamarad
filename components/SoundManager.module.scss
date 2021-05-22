@@ -1,3 +1,5 @@
+@import '../styles/common.scss';
+
 .container {
     // aaa
 }
@@ -5,6 +7,6 @@
 .windows {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 25px;
+    gap: $base-padding;
     align-items: start;
 }

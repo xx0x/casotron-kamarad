@@ -1,13 +1,13 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 
-import { Button } from 'react95';
+import Button from './Button';
 
 export default function FilePickerButton({
     children, onChange, accept, multiple, buttonProps
 }) {
     return (
         <Button
-            as="label"
+            tagName="label"
             style={{ position: 'relative', overflow: 'hidden' }}
             {...buttonProps}
         >

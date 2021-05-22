@@ -1,4 +1,4 @@
-import Header from '../components/Header';
+import Header from '../components/ui/Header';
 import SerialDeviceInfo from '../components/SerialDeviceInfo';
 import SoundManager from '../components/SoundManager';
 import { getSoundsDefinition, getAvailableSoundSets } from '../lib/sounds';
@@ -15,9 +15,9 @@ export async function getStaticProps() {
 export default function Home(props) {
     return (
         <>
-            <Header />
-            <SerialDeviceInfo />
-
+            <Header>
+                <SerialDeviceInfo />
+            </Header>
             <SoundManager
                 availableSoundSets={props.availableSoundSets}
                 soundsDefinition={props.soundsDefinition}
