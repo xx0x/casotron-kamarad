@@ -13,6 +13,14 @@
     cursor: pointer;
     text-transform: uppercase;
     display: inline-block;
+
+    &[disabled]{
+        opacity: 0.4;
+    }
+}
+
+.small{
+    font-size: 10px;
 }
 
 .primary {

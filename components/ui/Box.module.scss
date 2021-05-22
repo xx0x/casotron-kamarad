@@ -8,10 +8,22 @@
 .header {
     background-color: $box-border-color;
     color: #fff;
-    padding: 0.5em 1em;
+    padding: 0 10px;
+    display: flex;
+    min-height: 50px;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.title {
     text-transform: uppercase;
 }
 
 .content {
     color: #fff;
+}
+
+.action {
+    display: flex;
+    gap: 10px;
 }

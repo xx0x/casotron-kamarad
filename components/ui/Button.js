@@ -10,10 +10,11 @@ function Button(props) {
             onClick={props.onClick}
             className={classNames({
                 [style.container]: true,
+                [style.small]: props.small,
                 [style.primary]: props.primary,
-                [style.secondary]: props.secondary,
-                [style.outline]: props.outline
+                [style.secondary]: props.secondary
             })}
+            disabled={props.disabled}
         >
             {props.children}
         </TagName>

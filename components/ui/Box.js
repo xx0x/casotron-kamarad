@@ -9,7 +9,16 @@ function Box(props) {
             <div
                 className={style.header}
             >
-                {props.title}
+                <div
+                    className={style.title}
+                >
+                    {props.title}
+                </div>
+                <div
+                    className={style.action}
+                >
+                    {props.action}
+                </div>
             </div>
             <div
                 className={style.content}

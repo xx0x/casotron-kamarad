@@ -25,6 +25,7 @@ class SoundManager extends React.Component {
         this.loadDefaultSound = this.loadDefaultSound.bind(this);
         this.loadAllDefaultSounds = this.loadAllDefaultSounds.bind(this);
         this.addAlarmSound = this.addAlarmSound.bind(this);
+        this.isUploadEnabled = this.isUploadEnabled.bind(this);
     }
 
     updateRequiredSound(id, data) {
@@ -98,70 +99,79 @@ class SoundManager extends React.Component {
         }
     }
 
+    isUploadEnabled() {
+        return Object.values(this.state.requiredSoundsData).length !== 0;
+    }
+
     render() {
         return (
             <div className={style.container}>
-                <Button
-                    onClick={this.loadAllDefaultSounds}
-                >
-                    Load All Default Sounds
-                </Button>
-                <Button
-                    disabled={Object.values(this.state.requiredSoundsData).length === 0}
-                    onClick={this.uploadSounds}
-                >
-                    upload sounds to device
-                </Button>
+                <div className={style.boxes}>
+                    <div className={style.boxes_columns}>
 
-                <div className={style.windows}>
+                        <Box
+                            title="Sound Sets"
+                            action={(
+                                <Button
+                                    small
+                                    onClick={this.loadAllDefaultSounds}
+                                >
+                                    Load Default
+                                </Button>
+                            )}
+                        />
 
-                    <Box
-                        title="Alarms"
-                    >
-                        <FilePickerButton
-                            buttonProps={{
-                                variant: 'menu',
-                                size: 'sm'
-                            }}
-                            accept="audio/*"
-                            onChange={(file) => {
-                                submitAndDecode(file).then((wavData) => this.addAlarmSound(removeExtension(file.name), wavData));
-                            }}
+                        <Box
+                            title="Alarms"
+                            action={(
+                                <FilePickerButton
+                                    buttonProps={{
+                                        small: true
+                                    }}
+                                    accept="audio/*"
+                                    onChange={(file) => {
+                                        submitAndDecode(file).then((wavData) => this.addAlarmSound(removeExtension(file.name), wavData));
+                                    }}
+                                >
+                                    Add new sound
+                                </FilePickerButton>
+                            )}
                         >
-                            Add new sound
-                        </FilePickerButton>
-                        <SoundItems
-                            className={style.items}
-                            items={this.state.alarmSoundsData}
-                            sortable
-                            onMove={(oldId, newId) => {
-                                this.setState((prevState) => ({
-                                    alarmSoundsData: arrayMoveById(prevState.alarmSoundsData, oldId, newId)
-                                }));
-                            }}
-                            onItemClearClick={(item) => {
-                                this.setState((prevState) => ({ alarmSoundsData: prevState.alarmSoundsData.filter((x) => x.id !== item.id) }));
-                            }}
-                        />
+                            <SoundItems
+                                className={style.items}
+                                items={this.state.alarmSoundsData}
+                                sortable
+                                onMove={(oldId, newId) => {
+                                    this.setState((prevState) => ({
+                                        alarmSoundsData: arrayMoveById(prevState.alarmSoundsData, oldId, newId)
+                                    }));
+                                }}
+                                onItemClearClick={(item) => {
+                                    this.setState((prevState) => ({ alarmSoundsData: prevState.alarmSoundsData.filter((x) => x.id !== item.id) }));
+                                }}
+                            />
 
-                    </Box>
-                    <Box
-                        title="Voice"
-                    >
-                        <SoundItems
-                            className={style.items}
-                            items={this.props.soundsDefinition.required.map((item) => ({
-                                ...item,
-                                soundData: this.state.requiredSoundsData[item.id]
-                            }))}
-                            onItemReplaceSubmit={(item, file) => {
-                                submitAndDecode(file).then((wavData) => {
-                                    this.updateRequiredSound(item.id, wavData);
-                                });
-                            }}
-                            onItemLoadDefaultClick={(item) => this.loadDefaultSound(item.id)}
-                        />
-                    </Box>
+                        </Box>
+                    </div>
+                    <div className={style.boxes_columns}>
+                        <Box
+                            title="Voice"
+                        >
+                            <SoundItems
+                                className={style.items}
+                                items={this.props.soundsDefinition.required.map((item) => ({
+                                    ...item,
+                                    soundData: this.state.requiredSoundsData[item.id]
+                                }))}
+                                onItemReplaceSubmit={(item, file) => {
+                                    submitAndDecode(file).then((wavData) => {
+                                        this.updateRequiredSound(item.id, wavData);
+                                    });
+                                }}
+                                onItemLoadDefaultClick={(item) => this.loadDefaultSound(item.id)}
+                            />
+                        </Box>
+                    </div>
                 </div>
             </div>
         );

@@ -4,9 +4,16 @@
     // aaa
 }
 
-.windows {
+.boxes {
     display: grid;
     grid-template-columns: 1fr 1fr;
+    gap: $base-padding;
+    align-items: start;
+}
+
+.boxes_columns {
+    display: grid;
+    grid-template-columns: 1fr;
     gap: $base-padding;
     align-items: start;
 }

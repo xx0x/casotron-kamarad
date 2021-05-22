@@ -1,7 +1,9 @@
-import Header from '../components/ui/Header';
+import { useRef } from 'react';
 import SerialDeviceInfo from '../components/SerialDeviceInfo';
 import SoundManager from '../components/SoundManager';
-import { getSoundsDefinition, getAvailableSoundSets } from '../lib/sounds';
+import Button from '../components/ui/Button';
+import Header from '../components/ui/Header';
+import { getAvailableSoundSets, getSoundsDefinition } from '../lib/sounds';
 
 export async function getStaticProps() {
     return {
@@ -13,12 +15,20 @@ export async function getStaticProps() {
 }
 
 export default function Home(props) {
+
+    const soundManagerRef = useRef(null);
     return (
         <>
             <Header>
                 <SerialDeviceInfo />
+                <Button
+                    onClick={() => soundManagerRef.current.uploadSounds()}
+                >
+                    upload sounds to device
+                </Button>
             </Header>
             <SoundManager
+                ref={soundManagerRef}
                 availableSoundSets={props.availableSoundSets}
                 soundsDefinition={props.soundsDefinition}
             />

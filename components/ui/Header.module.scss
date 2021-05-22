@@ -20,3 +20,8 @@
     font-weight: $header-font-weight;
     font-size: 27px;
 }
+
+.contents {
+    display: flex;
+    gap: $base-padding;
+}
