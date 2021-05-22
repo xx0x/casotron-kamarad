@@ -1,4 +1,5 @@
 import log from 'loglevel';
+import inBrowserDownload from 'in-browser-download';
 import React from 'react';
 import { WaveFile } from 'wavefile';
 import arrayMoveById from '../utils/arrayMoveById';
@@ -26,6 +27,30 @@ class SoundManager extends React.Component {
         this.loadAllDefaultSounds = this.loadAllDefaultSounds.bind(this);
         this.addAlarmSound = this.addAlarmSound.bind(this);
         this.isUploadEnabled = this.isUploadEnabled.bind(this);
+    }
+
+    componentDidUpdate(prevProps) {
+
+        if (this.props.port && prevProps.port !== this.props.port) {
+            const port = this.props.port;
+            console.log('port open');
+            const reader = port.readable.getReader();
+            let readFromCom = null;
+            readFromCom = () => {
+                reader.read().then(({ done, value }) => {
+                    if (done) {
+                        // Allow the serial port to be closed later.
+                        reader.releaseLock();
+                    }
+                    // value is a Uint8Array.
+                    console.log(new TextDecoder().decode(value));
+                    readFromCom();
+                }).catch(() => {
+                    this.props.setPort(null);
+                });
+            };
+            readFromCom();
+        }
     }
 
     updateRequiredSound(id, data) {
@@ -66,7 +91,23 @@ class SoundManager extends React.Component {
                 rawData[alarmsStartId + index] = wavFile.data.samples;
             }
         });
-        log.warn(createSoundFile(rawData));
+        const finalData = createSoundFile(rawData);
+        // inBrowserDownload(finalData.buffer, 'samples-kamarad.dat');
+        const port = this.props.port;
+        if (port) {
+            console.log('Port OK');
+            const writer = port.writable.getWriter();
+            writer.write(new Uint8Array([64])).then(() => {
+                log.debug('Starting to upload...');
+                writer.write(finalData).then(() => {
+                    log.debug('DONE!!!!');
+                    writer.releaseLock();
+                });
+            });
+
+        } else {
+            console.error('Port not available...');
+        }
     }
 
     loadDefaultSound(id) {
@@ -109,6 +150,20 @@ class SoundManager extends React.Component {
                 <div className={style.boxes}>
                     <div className={style.boxes_columns}>
 
+                        <Box
+                            title="Device"
+                        >
+                            {this.props.port &&
+                                <>
+                                    Connected!
+                                </>
+                            }
+                            {!this.props.port &&
+                                <>
+                                    Not connected
+                                </>
+                            }
+                        </Box>
                         <Box
                             title="Sound Sets"
                             action={(

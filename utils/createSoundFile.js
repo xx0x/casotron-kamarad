@@ -12,15 +12,15 @@ function toBytesInt32(num) {
 export default function createSoundFile(samples) {
 
     // header length = itself + samples * (sample ID + 32bit number)
-    const headerLength = 1 + Object.keys(samples).length * 5;
+    const headerLength = 4 + Object.keys(samples).length * 5;
     const dataLength = Object.values(samples).reduce((sum, sample) => sum + sample.length, 0);
     const totalLength = headerLength + dataLength;
 
     const buffer = new Uint8Array(new ArrayBuffer(totalLength));
 
     let i = 0;
-    buffer.set([headerLength], i);
-    i += 1;
+    buffer.set(toBytesInt32(headerLength), i);
+    i += 4;
 
     // write sample ID + its length
     Object.entries(samples).forEach(([id, data]) => {

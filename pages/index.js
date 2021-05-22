@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import SerialDeviceInfo from '../components/SerialDeviceInfo';
 import SoundManager from '../components/SoundManager';
 import Button from '../components/ui/Button';
@@ -17,17 +17,24 @@ export async function getStaticProps() {
 export default function Home(props) {
 
     const soundManagerRef = useRef(null);
+    const [port, setPort] = useState(null);
     return (
         <>
             <Header>
-                <SerialDeviceInfo />
+                <SerialDeviceInfo
+                    port={port}
+                    setPort={setPort}
+                />
                 <Button
                     onClick={() => soundManagerRef.current.uploadSounds()}
+                    disabled={!port}
                 >
                     upload sounds to device
                 </Button>
             </Header>
             <SoundManager
+                port={port}
+                setPort={setPort}
                 ref={soundManagerRef}
                 availableSoundSets={props.availableSoundSets}
                 soundsDefinition={props.soundsDefinition}
