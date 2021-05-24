@@ -2,6 +2,8 @@ import log from 'loglevel';
 import inBrowserDownload from 'in-browser-download';
 import React from 'react';
 import { WaveFile } from 'wavefile';
+import JSZip from 'jszip';
+import moment from 'moment';
 import arrayMoveById from '../utils/arrayMoveById';
 import createSoundFile from '../utils/createSoundFile';
 import removeExtension from '../utils/removeExtension';
@@ -12,6 +14,7 @@ import style from './SoundManager.module.scss';
 import Box from './ui/Box';
 import Button from './ui/Button';
 import FilePickerButton from './ui/FilePickerButton';
+import generateId from '../utils/generateId';
 
 class SoundManager extends React.Component {
 
@@ -21,6 +24,7 @@ class SoundManager extends React.Component {
             requiredSoundsData: {},
             alarmSoundsData: []
         };
+        this.saveCurrentSet = this.saveCurrentSet.bind(this);
         this.updateRequiredSound = this.updateRequiredSound.bind(this);
         this.uploadSounds = this.uploadSounds.bind(this);
         this.loadDefaultSound = this.loadDefaultSound.bind(this);
@@ -51,6 +55,26 @@ class SoundManager extends React.Component {
             };
             readFromCom();
         }
+    }
+
+    saveCurrentSet() {
+
+        const zipFile = new JSZip();
+        const meta = { type: 'casotron-sound-data', alarmSounds: [], requiredSounds: {} };
+        this.state.alarmSoundsData.forEach((obj) => {
+            const filename = generateId();
+            const metaObj = {
+                id: obj.id,
+                file: filename
+            };
+            meta.alarmSounds.push(metaObj);
+            zipFile.file(filename, obj.soundData);
+        });
+        zipFile.file('manifest', JSON.stringify(meta));
+        zipFile.generateAsync({ type: 'blob' })
+            .then((content) => {
+                inBrowserDownload(content, `casotron_${moment().format('YYYYMMDD_HHmmss')}.xx0x`);
+            });
     }
 
     updateRequiredSound(id, data) {
@@ -167,12 +191,20 @@ class SoundManager extends React.Component {
                         <Box
                             title="Sound Sets"
                             action={(
-                                <Button
-                                    small
-                                    onClick={this.loadAllDefaultSounds}
-                                >
-                                    Load Default
-                                </Button>
+                                <>
+                                    <Button
+                                        small
+                                        onClick={this.loadAllDefaultSounds}
+                                    >
+                                        Load Default
+                                    </Button>
+                                    <Button
+                                        small
+                                        onClick={this.saveCurrentSet}
+                                    >
+                                        Save current
+                                    </Button>
+                                </>
                             )}
                         />
 
