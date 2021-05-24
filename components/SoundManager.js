@@ -1,4 +1,5 @@
 import inBrowserDownload from 'in-browser-download';
+import localforage from 'localforage';
 import JSZip from 'jszip';
 import log from 'loglevel';
 import moment from 'moment';
@@ -7,6 +8,7 @@ import { WaveFile } from 'wavefile';
 import arrayMoveById from '../utils/arrayMoveById';
 import createSoundFile from '../utils/createSoundFile';
 import generateId from '../utils/generateId';
+import packSounds from '../utils/packSounds';
 import removeExtension from '../utils/removeExtension';
 import retrieveAndDecode from '../utils/retrieveAndDecode';
 import submitAndDecode from '../utils/submitAndDecode';
@@ -15,6 +17,7 @@ import style from './SoundManager.module.scss';
 import Box from './ui/Box';
 import Button from './ui/Button';
 import FilePickerButton from './ui/FilePickerButton';
+import unpackSounds from '../utils/unpackSounds';
 
 const EMPTY_SOUND_DATA = {
     requiredSoundsData: {},
@@ -26,7 +29,8 @@ class SoundManager extends React.Component {
     constructor() {
         super();
         this.state = { ...EMPTY_SOUND_DATA };
-        this.saveCurrentSet = this.saveCurrentSet.bind(this);
+        this.saveToFile = this.saveToFile.bind(this);
+        this.saveLocally = this.saveLocally.bind(this);
         this.loadSetFromFile = this.loadSetFromFile.bind(this);
         this.updateRequiredSound = this.updateRequiredSound.bind(this);
         this.uploadSounds = this.uploadSounds.bind(this);
@@ -34,6 +38,10 @@ class SoundManager extends React.Component {
         this.loadAllDefaultSounds = this.loadAllDefaultSounds.bind(this);
         this.addAlarmSound = this.addAlarmSound.bind(this);
         this.isUploadEnabled = this.isUploadEnabled.bind(this);
+    }
+
+    componentDidMount() {
+        this.loadLocally();
     }
 
     componentDidUpdate(prevProps) {
@@ -63,83 +71,33 @@ class SoundManager extends React.Component {
     loadSetFromFile(file) {
 
         this.setState(EMPTY_SOUND_DATA, () => {
-            // Reader will go here
             const rdr = new FileReader();
             rdr.onload = (ev) => {
-                JSZip.loadAsync(ev.target.result).then((zipFile) => {
-                    zipFile.file('manifest').async('string').then((manifestDataString) => {
-                        const manifestData = JSON.parse(manifestDataString);
-                        if (manifestData.type === 'casotron-sound-data') {
-                            console.log(manifestData);
-                            if (manifestData.alarmSounds && manifestData.alarmSounds.length > 0) {
-                                Promise.all(manifestData.alarmSounds.map((sound) => new Promise((resolve, reject) => {
-                                    if (sound.file) {
-                                        zipFile.file(sound.file).async('uint8array').then((soundData) => {
-                                            resolve({
-                                                id: sound.id,
-                                                soundData
-                                            });
-                                        });
-                                        return;
-                                    }
-                                    reject(new Error('Missing file'));
-                                }))).then((alarmSoundsData) => {
-                                    this.setState({ alarmSoundsData });
-                                    console.log(alarmSoundsData);
-                                });
-                            }
-                            if (manifestData.requiredSounds && Object.values(manifestData.requiredSounds).length > 0) {
-                                Promise.all(Object.entries(manifestData.requiredSounds).map(([id, filename]) => new Promise((resolve, reject) => {
-                                    if (filename) {
-                                        zipFile.file(filename).async('uint8array').then((soundData) => {
-                                            resolve({
-                                                id,
-                                                soundData
-                                            });
-                                        });
-                                        return;
-                                    }
-                                    reject(new Error('Missing file'));
-                                }))).then((requiredSoundsData) => {
-                                    const finalRequiredSoundsData = {};
-                                    requiredSoundsData.forEach((obj) => {
-                                        finalRequiredSoundsData[obj.id] = obj.soundData;
-                                    });
-                                    this.setState({ requiredSoundsData: finalRequiredSoundsData });
-                                    console.log(requiredSoundsData);
-                                });
-                            }
-                        }
-                    });
-                });
+                unpackSounds(ev.target.result).then((u) => this.setState(u));
             };
             rdr.readAsArrayBuffer(file);
         });
     }
 
-    saveCurrentSet() {
+    loadLocally() {
+        console.log('trying local load');
+        localforage.getItem('sounds').then((data) => {
+            if (data) {
+                unpackSounds(data).then((u) => this.setState(u));
+            }
+        });
+    }
 
-        const zipFile = new JSZip();
-        const meta = { type: 'casotron-sound-data', alarmSounds: [], requiredSounds: {} };
-        this.state.alarmSoundsData.forEach((obj) => {
-            const file = generateId();
-            const metaObj = {
-                id: obj.id,
-                file
-            };
-            meta.alarmSounds.push(metaObj);
-            zipFile.file(file, obj.soundData);
+    saveToFile() {
+        packSounds(this.state.requiredSoundsData, this.state.alarmSoundsData).then((content) => {
+            inBrowserDownload(content, `casotron_${moment().format('YYYYMMDD_HHmmss')}.xx0x`);
         });
-        Object.entries(this.state.requiredSoundsData).forEach(([id, soundData]) => {
-            const file = generateId();
-            meta.requiredSounds[id] = file;
-            zipFile.file(file, soundData);
+    }
+
+    saveLocally() {
+        packSounds(this.state.requiredSoundsData, this.state.alarmSoundsData).then((content) => {
+            localforage.setItem('sounds', content);
         });
-        zipFile.file('manifest', JSON.stringify(meta));
-        zipFile.generateAsync({ type: 'blob' })
-            .then((content) => {
-                inBrowserDownload(content, `casotron_${moment().format('YYYYMMDD_HHmmss')}.xx0x`);
-            });
     }
 
     updateRequiredSound(id, data) {
@@ -267,7 +225,7 @@ class SoundManager extends React.Component {
                                     </Button>
                                     <Button
                                         small
-                                        onClick={this.saveCurrentSet}
+                                        onClick={this.saveToFile}
                                     >
                                         Save to file
                                     </Button>
@@ -280,6 +238,12 @@ class SoundManager extends React.Component {
                                     >
                                         Load from file
                                     </FilePickerButton>
+                                    <Button
+                                        small
+                                        onClick={this.saveLocally}
+                                    >
+                                        Save locally
+                                    </Button>
                                 </>
                             )}
                         />
