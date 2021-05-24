@@ -1,11 +1,12 @@
-import log from 'loglevel';
 import inBrowserDownload from 'in-browser-download';
+import JSZip from 'jszip';
+import log from 'loglevel';
+import moment from 'moment';
 import React from 'react';
 import { WaveFile } from 'wavefile';
-import JSZip from 'jszip';
-import moment from 'moment';
 import arrayMoveById from '../utils/arrayMoveById';
 import createSoundFile from '../utils/createSoundFile';
+import generateId from '../utils/generateId';
 import removeExtension from '../utils/removeExtension';
 import retrieveAndDecode from '../utils/retrieveAndDecode';
 import submitAndDecode from '../utils/submitAndDecode';
@@ -14,17 +15,19 @@ import style from './SoundManager.module.scss';
 import Box from './ui/Box';
 import Button from './ui/Button';
 import FilePickerButton from './ui/FilePickerButton';
-import generateId from '../utils/generateId';
+
+const EMPTY_SOUND_DATA = {
+    requiredSoundsData: {},
+    alarmSoundsData: []
+};
 
 class SoundManager extends React.Component {
 
     constructor() {
         super();
-        this.state = {
-            requiredSoundsData: {},
-            alarmSoundsData: []
-        };
+        this.state = { ...EMPTY_SOUND_DATA };
         this.saveCurrentSet = this.saveCurrentSet.bind(this);
+        this.loadSetFromFile = this.loadSetFromFile.bind(this);
         this.updateRequiredSound = this.updateRequiredSound.bind(this);
         this.uploadSounds = this.uploadSounds.bind(this);
         this.loadDefaultSound = this.loadDefaultSound.bind(this);
@@ -57,18 +60,80 @@ class SoundManager extends React.Component {
         }
     }
 
+    loadSetFromFile(file) {
+
+        this.setState(EMPTY_SOUND_DATA, () => {
+            // Reader will go here
+            const rdr = new FileReader();
+            rdr.onload = (ev) => {
+                JSZip.loadAsync(ev.target.result).then((zipFile) => {
+                    zipFile.file('manifest').async('string').then((manifestDataString) => {
+                        const manifestData = JSON.parse(manifestDataString);
+                        if (manifestData.type === 'casotron-sound-data') {
+                            console.log(manifestData);
+                            if (manifestData.alarmSounds && manifestData.alarmSounds.length > 0) {
+                                Promise.all(manifestData.alarmSounds.map((sound) => new Promise((resolve, reject) => {
+                                    if (sound.file) {
+                                        zipFile.file(sound.file).async('uint8array').then((soundData) => {
+                                            resolve({
+                                                id: sound.id,
+                                                soundData
+                                            });
+                                        });
+                                        return;
+                                    }
+                                    reject(new Error('Missing file'));
+                                }))).then((alarmSoundsData) => {
+                                    this.setState({ alarmSoundsData });
+                                    console.log(alarmSoundsData);
+                                });
+                            }
+                            if (manifestData.requiredSounds && Object.values(manifestData.requiredSounds).length > 0) {
+                                Promise.all(Object.entries(manifestData.requiredSounds).map(([id, filename]) => new Promise((resolve, reject) => {
+                                    if (filename) {
+                                        zipFile.file(filename).async('uint8array').then((soundData) => {
+                                            resolve({
+                                                id,
+                                                soundData
+                                            });
+                                        });
+                                        return;
+                                    }
+                                    reject(new Error('Missing file'));
+                                }))).then((requiredSoundsData) => {
+                                    const finalRequiredSoundsData = {};
+                                    requiredSoundsData.forEach((obj) => {
+                                        finalRequiredSoundsData[obj.id] = obj.soundData;
+                                    });
+                                    this.setState({ requiredSoundsData: finalRequiredSoundsData });
+                                    console.log(requiredSoundsData);
+                                });
+                            }
+                        }
+                    });
+                });
+            };
+            rdr.readAsArrayBuffer(file);
+        });
+    }
+
     saveCurrentSet() {
 
         const zipFile = new JSZip();
         const meta = { type: 'casotron-sound-data', alarmSounds: [], requiredSounds: {} };
         this.state.alarmSoundsData.forEach((obj) => {
-            const filename = generateId();
+            const file = generateId();
             const metaObj = {
                 id: obj.id,
-                file: filename
+                file
             };
             meta.alarmSounds.push(metaObj);
-            zipFile.file(filename, obj.soundData);
+            zipFile.file(file, obj.soundData);
+        });
+        Object.entries(this.state.requiredSoundsData).forEach(([id, soundData]) => {
+            const file = generateId();
+            meta.requiredSounds[id] = file;
+            zipFile.file(file, soundData);
         });
         zipFile.file('manifest', JSON.stringify(meta));
         zipFile.generateAsync({ type: 'blob' })
@@ -149,19 +214,21 @@ class SoundManager extends React.Component {
     }
 
     loadAllDefaultSounds() {
-        // load required
-        const idsToLoad = this.props.soundsDefinition.required.map((item) => (item.id));
-        idsToLoad.reduce((p, id) => p.then(() => this.loadDefaultSound(id)), Promise.resolve()); // initial promise
+        this.setState(EMPTY_SOUND_DATA, () => {
+            // load required
+            const idsToLoad = this.props.soundsDefinition.required.map((item) => (item.id));
+            idsToLoad.reduce((p, id) => p.then(() => this.loadDefaultSound(id)), Promise.resolve()); // initial promise
 
-        // load alarms
-        const soundSet = this.props.availableSoundSets[0];
-        if (soundSet && soundSet.alarms) {
-            soundSet.alarms.reduce((p, alarm) => p.then(() => new Promise(
-                (resolve) => retrieveAndDecode(alarm.filename).then((wavData) => {
-                    this.addAlarmSound(alarm.id, wavData).then(resolve);
-                })
-            )), Promise.resolve()); // initial promise
-        }
+            // load alarms
+            const soundSet = this.props.availableSoundSets[0];
+            if (soundSet && soundSet.alarms) {
+                soundSet.alarms.reduce((p, alarm) => p.then(() => new Promise(
+                    (resolve) => retrieveAndDecode(alarm.filename).then((wavData) => {
+                        this.addAlarmSound(alarm.id, wavData).then(resolve);
+                    })
+                )), Promise.resolve()); // initial promise
+            }
+        });
     }
 
     isUploadEnabled() {
@@ -202,8 +269,17 @@ class SoundManager extends React.Component {
                                         small
                                         onClick={this.saveCurrentSet}
                                     >
-                                        Save current
+                                        Save to file
                                     </Button>
+                                    <FilePickerButton
+                                        buttonProps={{
+                                            small: true
+                                        }}
+                                        accept=".xx0x"
+                                        onChange={this.loadSetFromFile}
+                                    >
+                                        Load from file
+                                    </FilePickerButton>
                                 </>
                             )}
                         />
