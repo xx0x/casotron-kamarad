@@ -27,7 +27,9 @@ export default function unpackSounds(sourceBlob) {
                                 }))).then((alarmSoundsData) => {
                                     alarmSoundsDataPromiseResolve({ alarmSoundsData });
                                 });
+                                return;
                             }
+                            alarmSoundsDataPromiseResolve({});
                         }),
                         new Promise((requiredSoundsDataPromiseResolve) => {
                             if (manifestData.requiredSounds && Object.values(manifestData.requiredSounds).length > 0) {
@@ -49,7 +51,9 @@ export default function unpackSounds(sourceBlob) {
                                     });
                                     requiredSoundsDataPromiseResolve({ requiredSoundsData: finalRequiredSoundsData });
                                 });
+                                return;
                             }
+                            requiredSoundsDataPromiseResolve({});
                         })
                     ]).then((responses) => finalResolve((responses).reduce((a, b) => ({ ...a, ...b }), {})));
                 }

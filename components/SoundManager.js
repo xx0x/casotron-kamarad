@@ -121,8 +121,8 @@ class SoundManager extends React.Component {
         Object.entries(this.state.requiredSoundsData).forEach(([id, wavData]) => {
             const wavFile = new WaveFile(wavData);
             if (wavFile) {
-                wavFile.toBitDepth(16);
-                wavFile.toSampleRate(22050);
+                // wavFile.toBitDepth(16);
+                // wavFile.toSampleRate(22050);
                 rawData[id] = wavFile.data.samples;
             }
         });
@@ -130,8 +130,8 @@ class SoundManager extends React.Component {
         this.state.alarmSoundsData.forEach((alarm, index) => {
             const wavFile = new WaveFile(alarm.soundData);
             if (wavFile) {
-                wavFile.toBitDepth(16);
-                wavFile.toSampleRate(22050);
+                // wavFile.toBitDepth(16);
+                // wavFile.toSampleRate(22050);
                 rawData[alarmsStartId + index] = wavFile.data.samples;
             }
         });
