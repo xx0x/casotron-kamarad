@@ -1,4 +1,5 @@
 import JSZip from 'jszip';
+import omit from 'lodash.omit';
 
 export default function unpackSounds(sourceBlob) {
 
@@ -16,7 +17,7 @@ export default function unpackSounds(sourceBlob) {
                                     if (sound.file) {
                                         zipFile.file(sound.file).async('uint8array').then((soundData) => {
                                             resolve({
-                                                id: sound.id,
+                                                ...omit(sound, 'file'),
                                                 soundData
                                             });
                                         });

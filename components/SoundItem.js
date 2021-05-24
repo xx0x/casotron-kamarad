@@ -28,13 +28,6 @@ const SoundItem = forwardRef((props, ref) => {
             {props.transcription &&
                 <div className={style.transcription}>„{props.transcription}“</div>
             }
-            {props.onLoadDefaultClick &&
-                <Button
-                    onClick={props.onLoadDefaultClick}
-                >
-                    🔄
-                </Button>
-            }
             {props.onClearClick &&
                 <Button
                     onClick={props.onClearClick}

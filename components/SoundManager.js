@@ -1,23 +1,20 @@
 import inBrowserDownload from 'in-browser-download';
 import localforage from 'localforage';
-import JSZip from 'jszip';
 import log from 'loglevel';
 import moment from 'moment';
 import React from 'react';
 import { WaveFile } from 'wavefile';
 import arrayMoveById from '../utils/arrayMoveById';
 import createSoundFile from '../utils/createSoundFile';
-import generateId from '../utils/generateId';
 import packSounds from '../utils/packSounds';
 import removeExtension from '../utils/removeExtension';
-import retrieveAndDecode from '../utils/retrieveAndDecode';
 import submitAndDecode from '../utils/submitAndDecode';
+import unpackSounds from '../utils/unpackSounds';
 import SoundItems from './SoundItems';
 import style from './SoundManager.module.scss';
 import Box from './ui/Box';
 import Button from './ui/Button';
 import FilePickerButton from './ui/FilePickerButton';
-import unpackSounds from '../utils/unpackSounds';
 
 const EMPTY_SOUND_DATA = {
     requiredSoundsData: {},
@@ -34,7 +31,6 @@ class SoundManager extends React.Component {
         this.loadSetFromFile = this.loadSetFromFile.bind(this);
         this.updateRequiredSound = this.updateRequiredSound.bind(this);
         this.uploadSounds = this.uploadSounds.bind(this);
-        this.loadDefaultSound = this.loadDefaultSound.bind(this);
         this.loadAllDefaultSounds = this.loadAllDefaultSounds.bind(this);
         this.addAlarmSound = this.addAlarmSound.bind(this);
         this.isUploadEnabled = this.isUploadEnabled.bind(this);
@@ -42,6 +38,7 @@ class SoundManager extends React.Component {
 
     componentDidMount() {
         this.loadLocally();
+        console.log(this.props.availableSoundSets);
     }
 
     componentDidUpdate(prevProps) {
@@ -90,7 +87,7 @@ class SoundManager extends React.Component {
 
     saveToFile() {
         packSounds(this.state.requiredSoundsData, this.state.alarmSoundsData).then((content) => {
-            inBrowserDownload(content, `casotron_${moment().format('YYYYMMDD_HHmmss')}.xx0x`);
+            inBrowserDownload(content, `casotron_${moment().format('YYYYMMDD_HHmmss')}.casotron`);
         });
     }
 
@@ -157,35 +154,14 @@ class SoundManager extends React.Component {
         }
     }
 
-    loadDefaultSound(id) {
-        return new Promise((resolve) => {
-            const soundSet = this.props.availableSoundSets[0];
-            if (soundSet) {
-                const defaultSound = soundSet.required.find((x) => x.id === id);
-                if (defaultSound) {
-                    retrieveAndDecode(defaultSound.filename).then((wavData) => {
-                        this.updateRequiredSound(id, wavData).then(resolve);
-                    });
-                }
-            }
-        });
-    }
-
     loadAllDefaultSounds() {
         this.setState(EMPTY_SOUND_DATA, () => {
-            // load required
-            const idsToLoad = this.props.soundsDefinition.required.map((item) => (item.id));
-            idsToLoad.reduce((p, id) => p.then(() => this.loadDefaultSound(id)), Promise.resolve()); // initial promise
-
-            // load alarms
-            const soundSet = this.props.availableSoundSets[0];
-            if (soundSet && soundSet.alarms) {
-                soundSet.alarms.reduce((p, alarm) => p.then(() => new Promise(
-                    (resolve) => retrieveAndDecode(alarm.filename).then((wavData) => {
-                        this.addAlarmSound(alarm.id, wavData).then(resolve);
-                    })
-                )), Promise.resolve()); // initial promise
-            }
+            const filename = this.props.availableSoundSets[0].url;
+            fetch(filename)
+                .then((response) => response.blob())
+                .then((blob) => {
+                    unpackSounds(blob).then((u) => this.setState(u));
+                });
         });
     }
 
@@ -233,7 +209,7 @@ class SoundManager extends React.Component {
                                         buttonProps={{
                                             small: true
                                         }}
-                                        accept=".xx0x"
+                                        accept=".casotron"
                                         onChange={this.loadSetFromFile}
                                     >
                                         Load from file
@@ -295,7 +271,6 @@ class SoundManager extends React.Component {
                                         this.updateRequiredSound(item.id, wavData);
                                     });
                                 }}
-                                onItemLoadDefaultClick={(item) => this.loadDefaultSound(item.id)}
                             />
                         </Box>
                     </div>

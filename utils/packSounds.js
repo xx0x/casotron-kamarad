@@ -1,4 +1,5 @@
 import JSZip from 'jszip';
+import omit from 'lodash.omit';
 import generateId from './generateId';
 
 export default function packSounds(requiredSoundsData, alarmSoundsData) {
@@ -7,7 +8,7 @@ export default function packSounds(requiredSoundsData, alarmSoundsData) {
     alarmSoundsData.forEach((obj) => {
         const file = generateId();
         const metaObj = {
-            id: obj.id,
+            ...omit(obj, 'soundData'),
             file
         };
         meta.alarmSounds.push(metaObj);
