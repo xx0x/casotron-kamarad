@@ -14,6 +14,7 @@ import SoundItems from './SoundItems';
 import style from './SoundManager.module.scss';
 import Box from './ui/Box';
 import Button from './ui/Button';
+import Dropdown from './ui/Dropdown';
 import FilePickerButton from './ui/FilePickerButton';
 
 const EMPTY_SOUND_DATA = {
@@ -31,7 +32,7 @@ class SoundManager extends React.Component {
         this.loadSetFromFile = this.loadSetFromFile.bind(this);
         this.updateRequiredSound = this.updateRequiredSound.bind(this);
         this.uploadSounds = this.uploadSounds.bind(this);
-        this.loadAllDefaultSounds = this.loadAllDefaultSounds.bind(this);
+        this.loadSelectedSet = this.loadSelectedSet.bind(this);
         this.addAlarmSound = this.addAlarmSound.bind(this);
         this.isUploadEnabled = this.isUploadEnabled.bind(this);
     }
@@ -154,13 +155,13 @@ class SoundManager extends React.Component {
         }
     }
 
-    loadAllDefaultSounds() {
+    loadSelectedSet() {
         this.setState(EMPTY_SOUND_DATA, () => {
-            const filename = this.props.availableSoundSets[0].url;
+            const filename = this.state.selectedSet.url;
             fetch(filename)
                 .then((response) => response.blob())
                 .then((blob) => {
-                    unpackSounds(blob).then((u) => this.setState(u));
+                    unpackSounds(blob).then((u) => this.setState({ ...u, selectedSet: null }));
                 });
         });
     }
@@ -195,12 +196,6 @@ class SoundManager extends React.Component {
                                 <>
                                     <Button
                                         small
-                                        onClick={this.loadAllDefaultSounds}
-                                    >
-                                        Load Default
-                                    </Button>
-                                    <Button
-                                        small
                                         onClick={this.saveToFile}
                                     >
                                         Save to file
@@ -222,7 +217,24 @@ class SoundManager extends React.Component {
                                     </Button>
                                 </>
                             )}
-                        />
+                        >
+                            <Dropdown
+                                options={this.props.availableSoundSets.map((set) => ({
+                                    value: set.filename,
+                                    label: set.title
+                                }))}
+                                placeholder={{ label: '-', value: null }}
+                                value={this.state.selectedSet ? this.state.selectedSet.filename : ''}
+                                onChange={(filename) => this.setState({ selectedSet: filename ? this.props.availableSoundSets.find((x) => x.filename === filename) : null })}
+                            />
+                            <Button
+                                small
+                                disabled={!this.state.selectedSet}
+                                onClick={this.loadSelectedSet}
+                            >
+                                Load
+                            </Button>
+                        </Box>
 
                         <Box
                             title="Alarms"
