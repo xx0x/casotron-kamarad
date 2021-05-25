@@ -20,6 +20,7 @@ import Dropdown from './ui/Dropdown';
 import FilePickerButton from './ui/FilePickerButton';
 import Icon from './ui/Icon';
 import Toolbar from './ui/Toolbar';
+import UsedSpace from './UsedSpace';
 
 const EMPTY_SOUND_DATA = {
     requiredSoundsData: {},
@@ -174,6 +175,18 @@ class SoundManager extends React.Component {
         return Object.values(this.state.requiredSoundsData).length !== 0;
     }
 
+    getUsedData() {
+        return (
+            Object.values(this.state.requiredSoundsData).map((x) => x.length).reduce((a, b) => a + b, 0) +
+            (this.state.alarmSoundsData).map((x) => (x.soundData ? x.soundData.length : 0)).reduce((a, b) => a + b, 0)
+        );
+    }
+
+    // eslint-disable-next-line class-methods-use-this
+    getTotalData() {
+        return 8 * 1024 * 1024;
+    }
+
     render() {
         return (
             <div className={style.container}>
@@ -195,7 +208,7 @@ class SoundManager extends React.Component {
                             }
                         </Box>
                         <Box
-                            title={<Trans i18nKey="common.soundBanks" />}
+                            title={<Trans i18nKey="common.availableSoundBanks" />}
                         >
                             <Toolbar offset>
                                 <Dropdown
@@ -216,7 +229,7 @@ class SoundManager extends React.Component {
                             </Toolbar>
                         </Box>
                         <Box
-                            title={<Trans i18nKey="common.file" />}
+                            title={<Trans i18nKey="common.workFile" />}
                         >
                             <Toolbar offset>
                                 <Button
@@ -239,6 +252,10 @@ class SoundManager extends React.Component {
                                     <Trans i18nKey="common.load" />
                                 </FilePickerButton>
                             </Toolbar>
+                            <UsedSpace
+                                used={this.getUsedData()}
+                                total={this.getTotalData()}
+                            />
                         </Box>
 
                         <Box

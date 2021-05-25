@@ -15,10 +15,13 @@
         "annoucements": "Hlášení",
         "melodies": "Melodie",
         "soundBanks": "Zvukové banky",
+        "availableSoundBanks": "Dostupné zvukové banky",
         "loadSoundBank": "Načíst zvuky",
         "device": "Zařízení",
         "file": "Soubor",
+        "workFile": "Pracovní soubor",
         "chooseSoundBank": "Vybrat zvuky",
-        "status": "Status"
+        "status": "Status",
+        "usedSpace": "Vybrané zvuky"
     }
 }

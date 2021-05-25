@@ -1,0 +1,39 @@
+@import '../styles/common.scss';
+
+.container {
+    padding: 0 10px 10px 10px;
+}
+
+.title {
+    margin-bottom: 5px;
+}
+
+.bar {
+    display: block;
+    height: 40px;
+    position: relative;
+    border: 2px solid #fff;
+}
+
+.progress {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    transform-origin: 0 0;
+    transition: 0.5s;
+    background-color: $primary-color;
+}
+
+.value {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
