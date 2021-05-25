@@ -7,7 +7,8 @@
         "delete": "Odstranit",
         "choose": "Vybrat",
         "save": "Uložit",
-        "load": "Otevřít",
+        "open": "Otevřít",
+        "load": "Načíst",
         "saveInBrowser": "Uložit v prohl.",
         "saveFile": "Uložit soubor",
         "loadFile": "Načíst soubor",
@@ -16,6 +17,7 @@
         "soundBanks": "Zvukové banky",
         "loadSoundBank": "Načíst zvuky",
         "device": "Zařízení",
-        "file": "Soubor"
+        "file": "Soubor",
+        "chooseSoundBank": "Vybrat zvuky"
     }
 }

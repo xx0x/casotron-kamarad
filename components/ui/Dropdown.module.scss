@@ -1,0 +1,43 @@
+@import '../../styles/common.scss';
+
+.container {
+    font-size: 10px;
+    background-color: transparent;
+    color: $text-color;
+    padding: 0.8em 1em;
+    text-decoration: none;
+    border: 2px solid $text-color;
+    font-family: $header-font-family;
+    font-weight: $header-font-weight;
+    line-height: $header-line-height;
+    cursor: pointer;
+    text-transform: uppercase;
+    display: inline-flex;
+    align-items: center;
+    text-align: left;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url(data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIGlkPSJDYXBhXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IiB2aWV3Qm94PSIwIDAgNDggMzAiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDQ4IDMwOyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+PHN0eWxlIHR5cGU9InRleHQvY3NzIj4uc3Qwe2ZpbGw6I0ZGRkZGRjt9PC9zdHlsZT48Zz48Zz48cGF0aCBjbGFzcz0ic3QwIiBkPSJNMCwwLjVsMjQsMjguOUw0OCwwLjVDNDgsMC41LDAsMC41LDAsMC41eiBNOCw0LjNINDBMMjQsMjMuNkw4LDQuM3oiLz48L2c+PC9nPjwvc3ZnPg==);
+    padding-right: 3em;
+    background-size: 14px auto;
+    background-position: top 50% right 7px;
+    background-repeat: no-repeat;
+
+    &:focus {
+        outline: none;
+        // outline: 2px dashed #fff;
+        // outline-offset: 4px;
+    }
+
+    option {
+        background-color: $background-color;
+        color: $text-color;
+    }
+}
+
+.small {
+    font-size: 8px;
+    background-size: 12px auto;
+    background-position: top 50% right 6px;
+}

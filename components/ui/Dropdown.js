@@ -1,7 +1,14 @@
+import classNames from 'classnames';
+import style from './Dropdown.module.scss';
+
 export default function Dropdown(props) {
 
     return (
         <select
+            className={classNames({
+                [style.container]: true,
+                [style.small]: props.small
+            })}
             value={props.value}
             onChange={(e) => props.onChange(e.target.options[e.target.selectedIndex].value)}
         >

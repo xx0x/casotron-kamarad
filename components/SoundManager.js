@@ -1,3 +1,4 @@
+import i18next from 'i18next';
 import inBrowserDownload from 'in-browser-download';
 import localforage from 'localforage';
 import log from 'loglevel';
@@ -18,6 +19,7 @@ import Button from './ui/Button';
 import Dropdown from './ui/Dropdown';
 import FilePickerButton from './ui/FilePickerButton';
 import Icon from './ui/Icon';
+import Toolbar from './ui/Toolbar';
 
 const EMPTY_SOUND_DATA = {
     requiredSoundsData: {},
@@ -195,50 +197,48 @@ class SoundManager extends React.Component {
                         <Box
                             title={<Trans i18nKey="common.soundBanks" />}
                         >
-                            <Dropdown
-                                options={this.props.availableSoundSets.map((set) => ({
-                                    value: set.filename,
-                                    label: set.title
-                                }))}
-                                placeholder={{ label: '-', value: null }}
-                                value={this.state.selectedSet ? this.state.selectedSet.filename : ''}
-                                onChange={(filename) => this.setState({ selectedSet: filename ? this.props.availableSoundSets.find((x) => x.filename === filename) : null })}
-                            />
-                            <Button
-                                small
-                                disabled={!this.state.selectedSet}
-                                onClick={this.loadSelectedSet}
-                            >
-                                <Trans i18nKey="common.loadSoundBank" />
-                            </Button>
+                            <Toolbar offset>
+                                <Dropdown
+                                    options={this.props.availableSoundSets.map((set) => ({
+                                        value: set.filename,
+                                        label: set.title
+                                    }))}
+                                    placeholder={{ label: i18next.t('common.chooseSoundBank'), value: null }}
+                                    value={this.state.selectedSet ? this.state.selectedSet.filename : ''}
+                                    onChange={(filename) => this.setState({ selectedSet: filename ? this.props.availableSoundSets.find((x) => x.filename === filename) : null })}
+                                />
+                                <Button
+                                    disabled={!this.state.selectedSet}
+                                    onClick={this.loadSelectedSet}
+                                >
+                                    <Trans i18nKey="common.load" />
+                                </Button>
+                            </Toolbar>
                         </Box>
                         <Box
                             title={<Trans i18nKey="common.file" />}
                         >
-                            <Button
-                                small
-                                onClick={this.saveLocally}
-                            >
-                                <Icon name="018-chrome" />
-                                <Trans i18nKey="common.saveInBrowser" />
-                            </Button>
-                            <Button
-                                small
-                                onClick={this.saveToFile}
-                            >
-                                <Icon name="034-diskette" />
-                                <Trans i18nKey="common.save" />
-                            </Button>
-                            <FilePickerButton
-                                buttonProps={{
-                                    small: true
-                                }}
-                                accept=".casotron"
-                                onChange={this.loadSetFromFile}
-                            >
-                                <Icon name="110-folder" />
-                                <Trans i18nKey="common.load" />
-                            </FilePickerButton>
+                            <Toolbar offset>
+                                <Button
+                                    onClick={this.saveLocally}
+                                >
+                                    <Icon name="018-chrome" />
+                                    <Trans i18nKey="common.saveInBrowser" />
+                                </Button>
+                                <Button
+                                    onClick={this.saveToFile}
+                                >
+                                    <Icon name="034-diskette" />
+                                    <Trans i18nKey="common.save" />
+                                </Button>
+                                <FilePickerButton
+                                    accept=".casotron"
+                                    onChange={this.loadSetFromFile}
+                                >
+                                    <Icon name="110-folder" />
+                                    <Trans i18nKey="common.load" />
+                                </FilePickerButton>
+                            </Toolbar>
                         </Box>
 
                         <Box
