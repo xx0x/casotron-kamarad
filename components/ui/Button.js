@@ -12,7 +12,8 @@ function Button(props) {
                 [style.container]: true,
                 [style.small]: props.small,
                 [style.primary]: props.primary,
-                [style.secondary]: props.secondary
+                [style.secondary]: props.secondary,
+                [style.flashing]: props.flashing
             })}
             disabled={props.disabled}
         >

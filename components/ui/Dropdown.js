@@ -7,7 +7,8 @@ export default function Dropdown(props) {
         <select
             className={classNames({
                 [style.container]: true,
-                [style.small]: props.small
+                [style.small]: props.small,
+                [style.flashing]: props.flashing
             })}
             value={props.value}
             onChange={(e) => props.onChange(e.target.options[e.target.selectedIndex].value)}

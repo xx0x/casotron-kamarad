@@ -9,6 +9,7 @@ import { Trans } from 'react-i18next';
 import { WaveFile } from 'wavefile';
 import arrayMoveById from '../utils/arrayMoveById';
 import createSoundFile from '../utils/createSoundFile';
+import generateId from '../utils/generateId';
 import packSounds from '../utils/packSounds';
 import removeExtension from '../utils/removeExtension';
 import submitAndDecode from '../utils/submitAndDecode';
@@ -41,6 +42,7 @@ class SoundManager extends React.Component {
         this.loadSelectedSet = this.loadSelectedSet.bind(this);
         this.addAlarmSound = this.addAlarmSound.bind(this);
         this.isUploadEnabled = this.isUploadEnabled.bind(this);
+        this.clearCurrentWork = this.clearCurrentWork.bind(this);
     }
 
     componentDidMount() {
@@ -114,10 +116,10 @@ class SoundManager extends React.Component {
         });
     }
 
-    addAlarmSound(id, wavData) {
+    addAlarmSound(name, wavData) {
         return new Promise((resolve) => {
             this.setState((prevState) => ({
-                alarmSoundsData: [...prevState.alarmSoundsData, { id, soundData: wavData }]
+                alarmSoundsData: [...prevState.alarmSoundsData, { id: generateId(), title: name, soundData: wavData }]
             }), resolve);
         });
     }
@@ -171,8 +173,17 @@ class SoundManager extends React.Component {
         });
     }
 
+    clearCurrentWork() {
+        this.setState(EMPTY_SOUND_DATA);
+        localforage.removeItem('sounds');
+    }
+
     isUploadEnabled() {
         return Object.values(this.state.requiredSoundsData).length !== 0;
+    }
+
+    isEmpty() {
+        return (this.getUsedData() === 0);
     }
 
     getUsedData() {
@@ -188,6 +199,7 @@ class SoundManager extends React.Component {
     }
 
     render() {
+        const isEmpty = this.isEmpty();
         return (
             <div className={style.container}>
                 <div className={style.boxes}>
@@ -216,12 +228,14 @@ class SoundManager extends React.Component {
                                         value: set.filename,
                                         label: set.title
                                     }))}
+                                    flashing={isEmpty && !this.state.selectedSet}
                                     placeholder={{ label: i18next.t('common.chooseSoundBank'), value: null }}
                                     value={this.state.selectedSet ? this.state.selectedSet.filename : ''}
                                     onChange={(filename) => this.setState({ selectedSet: filename ? this.props.availableSoundSets.find((x) => x.filename === filename) : null })}
                                 />
                                 <Button
                                     disabled={!this.state.selectedSet}
+                                    flashing={isEmpty && this.state.selectedSet}
                                     onClick={this.loadSelectedSet}
                                 >
                                     <Trans i18nKey="common.load" />
@@ -239,10 +253,11 @@ class SoundManager extends React.Component {
                                     <Trans i18nKey="common.saveInBrowser" />
                                 </Button>
                                 <Button
-                                    onClick={this.saveToFile}
+                                    onClick={this.clearCurrentWork}
+                                    disabled={isEmpty}
                                 >
-                                    <Icon name="034-diskette" />
-                                    <Trans i18nKey="common.save" />
+                                    <Icon name="046-trash-can" />
+                                    <Trans i18nKey="common.clearInBrowser" />
                                 </Button>
                                 <FilePickerButton
                                     accept=".casotron"
@@ -251,6 +266,13 @@ class SoundManager extends React.Component {
                                     <Icon name="110-folder" />
                                     <Trans i18nKey="common.load" />
                                 </FilePickerButton>
+                                <Button
+                                    onClick={this.saveToFile}
+                                    disabled={isEmpty}
+                                >
+                                    <Icon name="034-diskette" />
+                                    <Trans i18nKey="common.save" />
+                                </Button>
                             </Toolbar>
                             <UsedSpace
                                 used={this.getUsedData()}

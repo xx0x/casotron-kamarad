@@ -1,4 +1,4 @@
-@import '../../styles/common.scss';
+@import "../../styles/common.scss";
 
 .container {
     font-size: 10px;
@@ -40,4 +40,10 @@
     font-size: 8px;
     background-size: 12px auto;
     background-position: top 50% right 6px;
+}
+
+.flashing {
+    :global {
+        animation: flashing 1.5s infinite;
+    }
 }

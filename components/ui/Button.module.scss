@@ -40,6 +40,12 @@
     }
 }
 
+.flashing {
+    :global {
+        animation: flashing 1.5s infinite;
+    }
+}
+
 .small {
     font-size: 8px;
 

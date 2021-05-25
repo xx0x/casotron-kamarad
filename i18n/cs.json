@@ -6,6 +6,8 @@
         "play": "Přehrát",
         "delete": "Odstranit",
         "choose": "Vybrat",
+        "clear": "Smazat",
+        "clearInBrowser": "Smazat v prohl.",
         "save": "Uložit",
         "open": "Otevřít",
         "load": "Načíst",

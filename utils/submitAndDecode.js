@@ -18,7 +18,7 @@ export default function submitAndDecode(file) {
                     wavFile.toSampleRate(22050);
                     log.debug('🔊 WAV conversion complete.');
                     const convertedWavData = wavFile.toBuffer();
-                    resolve(new Blob([convertedWavData]));
+                    resolve(convertedWavData);
                 }
             }).catch((e) => {
                 reject();
