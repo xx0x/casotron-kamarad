@@ -1,3 +1,4 @@
+/* eslint-disable react/sort-comp */
 import i18next from 'i18next';
 import inBrowserDownload from 'in-browser-download';
 import localforage from 'localforage';
@@ -72,7 +73,6 @@ class SoundManager extends React.Component {
     }
 
     loadSetFromFile(file) {
-
         this.setState(EMPTY_SOUND_DATA, () => {
             const rdr = new FileReader();
             rdr.onload = (ev) => {

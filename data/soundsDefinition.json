@@ -3,198 +3,159 @@
     "required": [
         {
             "id": 0,
-            "title": "0",
-            "transcription": "Nula"
+            "title": "Nula"
         },
         {
             "id": 1,
-            "title": "1",
-            "transcription": "Jedna"
+            "title": "Jedna"
         },
         {
             "id": 2,
-            "title": "2",
-            "transcription": "Dvě"
+            "title": "Dvě"
         },
         {
             "id": 3,
-            "title": "3",
-            "transcription": "Tři"
+            "title": "Tři"
         },
         {
             "id": 4,
-            "title": "4",
-            "transcription": "Čtyři"
+            "title": "Čtyři"
         },
         {
             "id": 5,
-            "title": "5",
-            "transcription": "Pět"
+            "title": "Pět"
         },
         {
             "id": 6,
-            "title": "6",
-            "transcription": "Šest"
+            "title": "Šest"
         },
         {
             "id": 7,
-            "title": "7",
-            "transcription": "Sedm"
+            "title": "Sedm"
         },
         {
             "id": 8,
-            "title": "8",
-            "transcription": "Osm"
+            "title": "Osm"
         },
         {
             "id": 9,
-            "title": "9",
-            "transcription": "Devět"
+            "title": "Devět"
         },
         {
             "id": 10,
-            "title": "10",
-            "transcription": "Deset"
+            "title": "Deset"
         },
         {
             "id": 11,
-            "title": "11",
-            "transcription": "Jedenáct"
+            "title": "Jedenáct"
         },
         {
             "id": 12,
-            "title": "12",
-            "transcription": "Dvanáct"
+            "title": "Dvanáct"
         },
         {
             "id": 13,
-            "title": "13",
-            "transcription": "Třináct"
+            "title": "Třináct"
         },
         {
             "id": 14,
-            "title": "14",
-            "transcription": "Čtrnáct"
+            "title": "Čtrnáct"
         },
         {
             "id": 15,
-            "title": "15",
-            "transcription": "Patnáct"
+            "title": "Patnáct"
         },
         {
             "id": 16,
-            "title": "16",
-            "transcription": "Šestnáct"
+            "title": "Šestnáct"
         },
         {
             "id": 17,
-            "title": "17",
-            "transcription": "Sedmnáct"
+            "title": "Sedmnáct"
         },
         {
             "id": 18,
-            "title": "18",
-            "transcription": "Osmnáct"
+            "title": "Osmnáct"
         },
         {
             "id": 19,
-            "title": "19",
-            "transcription": "Devatenáct"
+            "title": "Devatenáct"
         },
         {
             "id": 20,
-            "title": "20",
-            "transcription": "Dvacet"
+            "title": "Dvacet"
         },
         {
             "id": 30,
-            "title": "30",
-            "transcription": "Třicet"
+            "title": "Třicet"
         },
         {
             "id": 40,
-            "title": "40",
-            "transcription": "Čtyřicet"
+            "title": "Čtyřicet"
         },
         {
             "id": 50,
-            "title": "50",
-            "transcription": "Padesát"
+            "title": "Padesát"
         },
         {
             "id": 60,
-            "title": "Intro znělka",
-            "transcription": "..."
+            "title": "Intro znělka"
         },
         {
             "id": 61,
-            "title": "Outro znělka",
-            "transcription": "..."
+            "title": "Outro znělka"
         },
         {
             "id": 70,
-            "title": "Hodin",
-            "transcription": "Hodin"
+            "title": "Hodin"
         },
         {
             "id": 71,
-            "title": "Hodina",
-            "transcription": "Hodina"
+            "title": "Hodina"
         },
         {
             "id": 72,
-            "title": "Hodiny",
-            "transcription": "Hodiny"
+            "title": "Hodiny"
         },
         {
             "id": 80,
-            "title": "Minut",
-            "transcription": "Minut"
+            "title": "Minut"
         },
         {
             "id": 81,
-            "title": "Minuta",
-            "transcription": "Minuta"
+            "title": "Minuta"
         },
         {
             "id": 82,
-            "title": "Minuty",
-            "transcription": "Minuty"
+            "title": "Minuty"
         },
         {
             "id": 90,
-            "title": "Prosím pozor!",
-            "transcription": "Prosím pozor!"
+            "title": "Prosím pozor!"
         },
         {
             "id": 91,
-            "title": "Čas nastaven",
-            "transcription": "Čas nastaven!"
+            "title": "Čas nastaven!"
         },
         {
             "id": 92,
-            "title": "Aktuální čas",
-            "transcription": "Aktuální čas:"
+            "title": "Aktuální čas:"
         },
         {
             "id": 93,
-            "title": "Budík nastaven",
-            "transcription": "Budík nastaven!"
+            "title": "Budík nastaven!"
         },
         {
             "id": 94,
-            "title": "Čas budíku",
-            "transcription": "Čas budíku:"
+            "title": "Čas budíku:"
         },
         {
             "id": 95,
-            "title": "Ding",
-            "transcription": "..."
+            "title": "Ding"
         },
         {
             "id": 96,
-            "title": "Dong",
-            "transcription": "..."
+            "title": "Dong"
         }
     ],
     "alarms": {

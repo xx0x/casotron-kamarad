@@ -29,9 +29,6 @@ const SoundItem = forwardRef((props, ref) => {
             tabIndex="0"
         >
             <div className={style.title}>{props.title || props.id}</div>
-            {props.transcription &&
-                <div className={style.transcription}>„{props.transcription}“</div>
-            }
             <Toolbar>
                 {props.onClearClick &&
                     <Button
