@@ -1,10 +1,9 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import { forwardRef, useEffect, useState } from 'react';
-import Icon from './icons/Icon';
-import Icons from './icons/Icons';
 import style from './SoundItem.module.scss';
 import Button from './ui/Button';
 import FilePickerButton from './ui/FilePickerButton';
+import Icon from './ui/Icon';
 
 const SoundItem = forwardRef((props, ref) => {
 
@@ -32,7 +31,7 @@ const SoundItem = forwardRef((props, ref) => {
                 <Button
                     onClick={props.onClearClick}
                 >
-                    🚮
+                    <Icon name="046-trash-can" />
                 </Button>
             }
             {props.onReplaceSubmit &&
@@ -40,10 +39,7 @@ const SoundItem = forwardRef((props, ref) => {
                     accept="audio/*"
                     onChange={props.onReplaceSubmit}
                 >
-                    {
-                        // props.soundData ? '📂' : '📂'
-                    }
-                    📂
+                    <Icon name="110-folder" />
                 </FilePickerButton>
             }
             <Button
@@ -60,7 +56,7 @@ const SoundItem = forwardRef((props, ref) => {
                     }
                 }}
             >
-                ▶
+                <Icon name="091-play-button" />
             </Button>
         </div>
     );

@@ -1,6 +1,7 @@
 import log from 'loglevel';
 import React from 'react';
 import Button from './ui/Button';
+import Icon from './ui/Icon';
 
 const BAUDRATE = 115200;
 
@@ -34,7 +35,8 @@ function SerialDeviceInfo(props) {
                         });
                     }}
                 >
-                    Connect to a device
+                    <Icon name="066-usb" />
+                    Connect
                 </Button>
             }
         </>
