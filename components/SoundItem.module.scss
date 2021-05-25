@@ -14,11 +14,12 @@
 
 .title {
     white-space: nowrap;
-    font-size: 13px;
+    font-size: 12px;
     font-family: $header-font-family;
     font-weight: $header-font-weight;
     overflow: hidden;
     text-overflow: ellipsis;
+    margin-bottom: 9px;
 }
 
 .transcription{

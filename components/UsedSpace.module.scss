@@ -12,6 +12,7 @@
     display: block;
     height: 40px;
     position: relative;
+    overflow: hidden;
     border: 2px solid #fff;
 }
 
@@ -36,4 +37,6 @@
     align-items: center;
     justify-content: center;
     text-align: center;
+    mix-blend-mode: difference;
+    filter: grayscale(1);
 }
