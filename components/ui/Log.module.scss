@@ -2,4 +2,11 @@
     height: 300px;
     overflow: auto;
     display: block;
+    padding: 10px;
+    font-family: "Consolas", "Courier New", Courier, monospace;
+    font-size: 13px;
+    word-wrap: break-word;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
 }

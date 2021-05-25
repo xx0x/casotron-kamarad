@@ -1,8 +1,10 @@
-@import '../../styles/common.scss';
+@import "../../styles/common.scss";
 
 .container {
     border: 2px solid $box-border-color;
     background-color: $box-background-color;
+    width: 100%;
+    overflow: hidden;
 }
 
 .header {

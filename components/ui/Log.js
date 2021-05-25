@@ -1,9 +1,7 @@
 import style from './Log.module.scss';
 
-export default function Log({ children }) {
+export default function Log() {
     return (
-        <pre className={style.container}>
-            {children}
-        </pre>
+        <pre className={style.container} id="serialLog" />
     );
 }

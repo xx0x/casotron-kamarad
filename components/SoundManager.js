@@ -14,6 +14,7 @@ import packSounds from '../utils/packSounds';
 import removeExtension from '../utils/removeExtension';
 import submitAndDecode from '../utils/submitAndDecode';
 import unpackSounds from '../utils/unpackSounds';
+import uploadSoundFile from '../utils/uploadSoundFile';
 import SoundItems from './SoundItems';
 import style from './SoundManager.module.scss';
 import Box from './ui/Box';
@@ -21,6 +22,7 @@ import Button from './ui/Button';
 import Dropdown from './ui/Dropdown';
 import FilePickerButton from './ui/FilePickerButton';
 import Icon from './ui/Icon';
+import Log from './ui/Log';
 import Toolbar from './ui/Toolbar';
 import UsedSpace from './UsedSpace';
 
@@ -33,7 +35,7 @@ class SoundManager extends React.Component {
 
     constructor() {
         super();
-        this.state = { ...EMPTY_SOUND_DATA };
+        this.state = { ...EMPTY_SOUND_DATA, logData: '' };
         this.saveToFile = this.saveToFile.bind(this);
         this.saveLocally = this.saveLocally.bind(this);
         this.loadSetFromFile = this.loadSetFromFile.bind(this);
@@ -53,10 +55,13 @@ class SoundManager extends React.Component {
     componentDidUpdate(prevProps) {
 
         if (this.props.port && prevProps.port !== this.props.port) {
+            console.warn('ports not same');
+            console.warn(this.props.port, prevProps.port);
             const port = this.props.port;
             console.log('port open');
             const reader = port.readable.getReader();
             let readFromCom = null;
+            const serialLog = document.getElementById('serialLog');
             readFromCom = () => {
                 reader.read().then(({ done, value }) => {
                     if (done) {
@@ -64,7 +69,8 @@ class SoundManager extends React.Component {
                         reader.releaseLock();
                     }
                     // value is a Uint8Array.
-                    console.log(new TextDecoder().decode(value));
+                    const txt = new TextDecoder().decode(value);
+                    serialLog.innerHTML = `${serialLog.innerHTML}${txt}`;
                     readFromCom();
                 }).catch(() => {
                     this.props.setPort(null);
@@ -125,6 +131,7 @@ class SoundManager extends React.Component {
     }
 
     uploadSounds() {
+        document.getElementById('serialLog').innerHTML = '';
         const rawData = {};
         Object.entries(this.state.requiredSoundsData).forEach(([id, wavData]) => {
             const wavFile = new WaveFile(wavData);
@@ -143,23 +150,7 @@ class SoundManager extends React.Component {
                 rawData[alarmsStartId + index] = wavFile.data.samples;
             }
         });
-        const finalData = createSoundFile(rawData);
-        // inBrowserDownload(finalData.buffer, 'samples-kamarad.dat');
-        const port = this.props.port;
-        if (port) {
-            console.log('Port OK');
-            const writer = port.writable.getWriter();
-            writer.write(new Uint8Array([64])).then(() => {
-                log.debug('Starting to upload...');
-                writer.write(finalData).then(() => {
-                    log.debug('DONE!!!!');
-                    writer.releaseLock();
-                });
-            });
-
-        } else {
-            console.error('Port not available...');
-        }
+        uploadSoundFile(this.props.port, createSoundFile(rawData));
     }
 
     loadSelectedSet() {
@@ -204,21 +195,6 @@ class SoundManager extends React.Component {
             <div className={style.container}>
                 <div className={style.boxes}>
                     <div className={style.boxes_columns}>
-
-                        <Box
-                            title={<Trans i18nKey="common.status" />}
-                        >
-                            {this.props.port &&
-                                <>
-                                    Connected!
-                                </>
-                            }
-                            {!this.props.port &&
-                                <>
-                                    Not connected
-                                </>
-                            }
-                        </Box>
                         <Box
                             title={<Trans i18nKey="common.availableSoundBanks" />}
                         >
@@ -311,6 +287,12 @@ class SoundManager extends React.Component {
                                 }}
                             />
 
+                        </Box>
+
+                        <Box
+                            title={<Trans i18nKey="common.log" />}
+                        >
+                            <Log />
                         </Box>
                     </div>
                     <div className={style.boxes_columns}>

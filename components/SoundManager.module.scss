@@ -16,4 +16,5 @@
     grid-template-columns: 1fr;
     gap: $base-padding;
     align-items: start;
+    min-width: 0;
 }
