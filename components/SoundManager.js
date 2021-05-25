@@ -45,6 +45,7 @@ class SoundManager extends React.Component {
         this.addAlarmSound = this.addAlarmSound.bind(this);
         this.isUploadEnabled = this.isUploadEnabled.bind(this);
         this.clearCurrentWork = this.clearCurrentWork.bind(this);
+        this.logRef = React.createRef();
     }
 
     componentDidMount() {
@@ -70,7 +71,9 @@ class SoundManager extends React.Component {
                     }
                     // value is a Uint8Array.
                     const txt = new TextDecoder().decode(value);
-                    serialLog.innerHTML = `${serialLog.innerHTML}${txt}`;
+                    if (this.logRef.current) {
+                        this.logRef.current.append(txt);
+                    }
                     readFromCom();
                 }).catch(() => {
                     this.props.setPort(null);
@@ -131,7 +134,9 @@ class SoundManager extends React.Component {
     }
 
     uploadSounds() {
-        document.getElementById('serialLog').innerHTML = '';
+        if (this.logRef.current) {
+            this.logRef.current.clear();
+        }
         const rawData = {};
         Object.entries(this.state.requiredSoundsData).forEach(([id, wavData]) => {
             const wavFile = new WaveFile(wavData);
@@ -292,7 +297,9 @@ class SoundManager extends React.Component {
                         <Box
                             title={<Trans i18nKey="common.log" />}
                         >
-                            <Log />
+                            <Log
+                                ref={this.logRef}
+                            />
                         </Box>
                     </div>
                     <div className={style.boxes_columns}>
