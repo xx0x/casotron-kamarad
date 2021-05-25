@@ -18,6 +18,7 @@
         "loadSoundBank": "Načíst zvuky",
         "device": "Zařízení",
         "file": "Soubor",
-        "chooseSoundBank": "Vybrat zvuky"
+        "chooseSoundBank": "Vybrat zvuky",
+        "status": "Status"
     }
 }

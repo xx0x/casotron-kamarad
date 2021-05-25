@@ -181,7 +181,7 @@ class SoundManager extends React.Component {
                     <div className={style.boxes_columns}>
 
                         <Box
-                            title={<Trans i18nKey="common.device" />}
+                            title={<Trans i18nKey="common.status" />}
                         >
                             {this.props.port &&
                                 <>
