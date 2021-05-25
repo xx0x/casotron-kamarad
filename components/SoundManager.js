@@ -2,7 +2,6 @@
 import i18next from 'i18next';
 import inBrowserDownload from 'in-browser-download';
 import localforage from 'localforage';
-import log from 'loglevel';
 import moment from 'moment';
 import React from 'react';
 import { Trans } from 'react-i18next';
@@ -35,7 +34,7 @@ class SoundManager extends React.Component {
 
     constructor() {
         super();
-        this.state = { ...EMPTY_SOUND_DATA, logData: '' };
+        this.state = { ...EMPTY_SOUND_DATA };
         this.saveToFile = this.saveToFile.bind(this);
         this.saveLocally = this.saveLocally.bind(this);
         this.loadSetFromFile = this.loadSetFromFile.bind(this);
@@ -50,19 +49,14 @@ class SoundManager extends React.Component {
 
     componentDidMount() {
         this.loadLocally();
-        console.log(this.props.availableSoundSets);
     }
 
     componentDidUpdate(prevProps) {
 
         if (this.props.port && prevProps.port !== this.props.port) {
-            console.warn('ports not same');
-            console.warn(this.props.port, prevProps.port);
             const port = this.props.port;
-            console.log('port open');
             const reader = port.readable.getReader();
             let readFromCom = null;
-            const serialLog = document.getElementById('serialLog');
             readFromCom = () => {
                 reader.read().then(({ done, value }) => {
                     if (done) {
@@ -94,7 +88,6 @@ class SoundManager extends React.Component {
     }
 
     loadLocally() {
-        console.log('trying local load');
         localforage.getItem('sounds').then((data) => {
             if (data) {
                 unpackSounds(data).then((u) => this.setState(u));
