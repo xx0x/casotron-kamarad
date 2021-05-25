@@ -3,6 +3,7 @@ import localforage from 'localforage';
 import log from 'loglevel';
 import moment from 'moment';
 import React from 'react';
+import { Trans } from 'react-i18next';
 import { WaveFile } from 'wavefile';
 import arrayMoveById from '../utils/arrayMoveById';
 import createSoundFile from '../utils/createSoundFile';
@@ -16,6 +17,7 @@ import Box from './ui/Box';
 import Button from './ui/Button';
 import Dropdown from './ui/Dropdown';
 import FilePickerButton from './ui/FilePickerButton';
+import Icon from './ui/Icon';
 
 const EMPTY_SOUND_DATA = {
     requiredSoundsData: {},
@@ -177,7 +179,7 @@ class SoundManager extends React.Component {
                     <div className={style.boxes_columns}>
 
                         <Box
-                            title="Device"
+                            title={<Trans i18nKey="common.device" />}
                         >
                             {this.props.port &&
                                 <>
@@ -191,32 +193,7 @@ class SoundManager extends React.Component {
                             }
                         </Box>
                         <Box
-                            title="Sound Sets"
-                            action={(
-                                <>
-                                    <Button
-                                        small
-                                        onClick={this.saveToFile}
-                                    >
-                                        Save to file
-                                    </Button>
-                                    <FilePickerButton
-                                        buttonProps={{
-                                            small: true
-                                        }}
-                                        accept=".casotron"
-                                        onChange={this.loadSetFromFile}
-                                    >
-                                        Load from file
-                                    </FilePickerButton>
-                                    <Button
-                                        small
-                                        onClick={this.saveLocally}
-                                    >
-                                        Save locally
-                                    </Button>
-                                </>
-                            )}
+                            title={<Trans i18nKey="common.soundBanks" />}
                         >
                             <Dropdown
                                 options={this.props.availableSoundSets.map((set) => ({
@@ -232,12 +209,40 @@ class SoundManager extends React.Component {
                                 disabled={!this.state.selectedSet}
                                 onClick={this.loadSelectedSet}
                             >
-                                Load
+                                <Trans i18nKey="common.loadSoundBank" />
                             </Button>
+                        </Box>
+                        <Box
+                            title={<Trans i18nKey="common.file" />}
+                        >
+                            <Button
+                                small
+                                onClick={this.saveLocally}
+                            >
+                                <Icon name="018-chrome" />
+                                <Trans i18nKey="common.saveInBrowser" />
+                            </Button>
+                            <Button
+                                small
+                                onClick={this.saveToFile}
+                            >
+                                <Icon name="034-diskette" />
+                                <Trans i18nKey="common.save" />
+                            </Button>
+                            <FilePickerButton
+                                buttonProps={{
+                                    small: true
+                                }}
+                                accept=".casotron"
+                                onChange={this.loadSetFromFile}
+                            >
+                                <Icon name="110-folder" />
+                                <Trans i18nKey="common.load" />
+                            </FilePickerButton>
                         </Box>
 
                         <Box
-                            title="Alarms"
+                            title={<Trans i18nKey="common.melodies" />}
                             action={(
                                 <FilePickerButton
                                     buttonProps={{
@@ -248,7 +253,8 @@ class SoundManager extends React.Component {
                                         submitAndDecode(file).then((wavData) => this.addAlarmSound(removeExtension(file.name), wavData));
                                     }}
                                 >
-                                    Add new sound
+                                    <Icon name="112-plus" />
+                                    <Trans i18nKey="common.addSound" />
                                 </FilePickerButton>
                             )}
                         >
@@ -270,7 +276,7 @@ class SoundManager extends React.Component {
                     </div>
                     <div className={style.boxes_columns}>
                         <Box
-                            title="Voice"
+                            title={<Trans i18nKey="common.annoucements" />}
                         >
                             <SoundItems
                                 className={style.items}

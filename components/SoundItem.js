@@ -1,5 +1,6 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import { forwardRef, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import style from './SoundItem.module.scss';
 import Button from './ui/Button';
 import FilePickerButton from './ui/FilePickerButton';
@@ -11,6 +12,9 @@ const SoundItem = forwardRef((props, ref) => {
     useEffect(() => {
         setAudioObj(null);
     }, [props.soundData]);
+
+    const { t } = useTranslation();
+
     return (
         <div
             key={props.id}
@@ -29,21 +33,29 @@ const SoundItem = forwardRef((props, ref) => {
             }
             {props.onClearClick &&
                 <Button
+                    small
                     onClick={props.onClearClick}
                 >
                     <Icon name="046-trash-can" />
+                    {t('common.delete')}
+
                 </Button>
             }
             {props.onReplaceSubmit &&
                 <FilePickerButton
+                    buttonProps={{
+                        small: true
+                    }}
                     accept="audio/*"
                     onChange={props.onReplaceSubmit}
                 >
                     <Icon name="110-folder" />
+                    {t('common.choose')}
                 </FilePickerButton>
             }
             <Button
                 disabled={!props.soundData}
+                small
                 onClick={() => {
                     if (audioObj) {
                         audioObj.pause();
@@ -57,6 +69,7 @@ const SoundItem = forwardRef((props, ref) => {
                 }}
             >
                 <Icon name="091-play-button" />
+                {t('common.play')}
             </Button>
         </div>
     );

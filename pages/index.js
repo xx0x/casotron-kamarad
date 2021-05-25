@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import SerialDeviceInfo from '../components/SerialDeviceInfo';
 import SoundManager from '../components/SoundManager';
 import Button from '../components/ui/Button';
@@ -22,6 +23,8 @@ export default function Home(props) {
 
     const soundManagerRef = useRef(null);
     const [port, setPort] = useState(null);
+    const { t } = useTranslation();
+
     return (
         <>
             <IconsContext.Provider value={props.icons}>
@@ -35,7 +38,7 @@ export default function Home(props) {
                         disabled={!port}
                     >
                         <Icon name="057-upload" />
-                        Upload to the device
+                        {t('common.transferToDevice')}
                     </Button>
                 </Header>
                 <SoundManager

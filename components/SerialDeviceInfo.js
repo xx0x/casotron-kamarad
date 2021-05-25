@@ -1,12 +1,13 @@
 import log from 'loglevel';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import Button from './ui/Button';
 import Icon from './ui/Icon';
 
 const BAUDRATE = 115200;
 
 function SerialDeviceInfo(props) {
-
+    const { t } = useTranslation();
     return (
         <>
             {!props.port &&
@@ -36,7 +37,7 @@ function SerialDeviceInfo(props) {
                     }}
                 >
                     <Icon name="066-usb" />
-                    Connect
+                    {t('common.connect')}
                 </Button>
             }
         </>

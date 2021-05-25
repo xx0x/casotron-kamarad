@@ -1,0 +1,21 @@
+{
+    "common": {
+        "connect": "Připojit",
+        "transferToDevice": "Nahrát do zařízení",
+        "addSound": "Přidat zvuk",
+        "play": "Přehrát",
+        "delete": "Odstranit",
+        "choose": "Vybrat",
+        "save": "Uložit",
+        "load": "Otevřít",
+        "saveInBrowser": "Uložit v prohl.",
+        "saveFile": "Uložit soubor",
+        "loadFile": "Načíst soubor",
+        "annoucements": "Hlášení",
+        "melodies": "Melodie",
+        "soundBanks": "Zvukové banky",
+        "loadSoundBank": "Načíst zvuky",
+        "device": "Zařízení",
+        "file": "Soubor"
+    }
+}
