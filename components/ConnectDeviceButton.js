@@ -27,8 +27,8 @@ function ConnectDeviceButton(props) {
                         }).then(() => {
                             log.info('🔌 Port opened.', p);
                             props.setPort(p);
-                        }).catch(() => {
-                            log.error('🔌 Cannot open port.');
+                        }).catch((e) => {
+                            log.error('🔌 Cannot open port.', e);
                         });
                     }).catch(() => {
                         props.setPort(null);

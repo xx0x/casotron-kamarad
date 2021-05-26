@@ -50,6 +50,7 @@ class SoundManager extends React.Component {
         this.addAlarmSound = this.addAlarmSound.bind(this);
         this.isUploadEnabled = this.isUploadEnabled.bind(this);
         this.clearCurrentWork = this.clearCurrentWork.bind(this);
+        this.setPort = this.setPort.bind(this);
         this.logRef = React.createRef();
     }
 
@@ -124,7 +125,7 @@ class SoundManager extends React.Component {
                 rawData[alarmsStartId + index] = wavFile.data.samples;
             }
         });
-        uploadSoundFile(this.props.port, createSoundFile(rawData));
+        uploadSoundFile(this.state.port, createSoundFile(rawData));
     }
 
     loadSelectedSet() {
@@ -178,7 +179,7 @@ class SoundManager extends React.Component {
                         }
                         readFromCom();
                     }).catch(() => {
-                        this.setPort(null);
+                        this.setState({ port: null });
                     });
                 };
                 readFromCom();
