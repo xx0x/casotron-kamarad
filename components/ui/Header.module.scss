@@ -13,6 +13,10 @@
     border-bottom: 2px solid currentColor;
     background-color: $background-color;
     z-index: 1000;
+
+    @include dialogOpen{
+        margin-right:var(--app-scrollbar-width);
+    }
 }
 
 .title {

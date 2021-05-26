@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import useScrollbarSize from 'react-scrollbar-size';
 import IntroDialog from '../components/IntroDialog';
 import SerialDeviceInfo from '../components/SerialDeviceInfo';
 import SoundManager from '../components/SoundManager';
@@ -26,34 +27,41 @@ export default function Home(props) {
     const [port, setPort] = useState(null);
     const { t } = useTranslation();
     const [showIntroDialog, setShowIntroDialog] = useState(true);
+    const scrollbarSize = useScrollbarSize();
 
     return (
         <>
             <IconsContext.Provider value={props.icons}>
-                <Header>
-                    <SerialDeviceInfo
+                <div
+                    style={{
+                        '--app-scrollbar-width': `${scrollbarSize.width}px`
+                    }}
+                >
+                    <Header>
+                        <SerialDeviceInfo
+                            port={port}
+                            setPort={setPort}
+                        />
+                        <Button
+                            onClick={() => soundManagerRef.current.uploadSounds()}
+                            disabled={!port}
+                        >
+                            <Icon name="057-upload" />
+                            {t('common.transferToDevice')}
+                        </Button>
+                    </Header>
+                    <SoundManager
                         port={port}
                         setPort={setPort}
+                        ref={soundManagerRef}
+                        availableSoundSets={props.availableSoundSets}
+                        soundsDefinition={props.soundsDefinition}
                     />
-                    <Button
-                        onClick={() => soundManagerRef.current.uploadSounds()}
-                        disabled={!port}
-                    >
-                        <Icon name="057-upload" />
-                        {t('common.transferToDevice')}
-                    </Button>
-                </Header>
-                <SoundManager
-                    port={port}
-                    setPort={setPort}
-                    ref={soundManagerRef}
-                    availableSoundSets={props.availableSoundSets}
-                    soundsDefinition={props.soundsDefinition}
-                />
-                <IntroDialog
-                    isOpen={showIntroDialog}
-                    onCloseClick={() => setShowIntroDialog(false)}
-                />
+                    <IntroDialog
+                        isOpen={showIntroDialog}
+                        onCloseClick={() => setShowIntroDialog(false)}
+                    />
+                </div>
             </IconsContext.Provider>
         </>
     );

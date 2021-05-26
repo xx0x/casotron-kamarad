@@ -17,7 +17,7 @@ body {
     padding-top: $appbar-height + $base-padding;
 }
 
-body.ReactModal__Body--open {
+body.app-dialog-open {
     position: fixed;
     overflow: hidden;
 }

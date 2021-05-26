@@ -1,7 +1,9 @@
 @import '../styles/common.scss';
 
 .container {
-    // aaa
+    @include dialogOpen{
+        margin-right:var(--app-scrollbar-width);
+    }
 }
 
 .boxes {

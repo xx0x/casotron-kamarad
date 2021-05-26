@@ -20,3 +20,11 @@ $box-background-color:#080808;
 $appbar-height: 80px;
 
 $base-padding: 15px;
+
+
+
+@mixin dialogOpen{
+    :global(body.app-dialog-open) & {
+        @content
+    }
+}
