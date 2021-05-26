@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import IntroDialog from '../components/IntroDialog';
 import SerialDeviceInfo from '../components/SerialDeviceInfo';
 import SoundManager from '../components/SoundManager';
 import Button from '../components/ui/Button';
@@ -24,6 +25,7 @@ export default function Home(props) {
     const soundManagerRef = useRef(null);
     const [port, setPort] = useState(null);
     const { t } = useTranslation();
+    const [showIntroDialog, setShowIntroDialog] = useState(true);
 
     return (
         <>
@@ -47,6 +49,10 @@ export default function Home(props) {
                     ref={soundManagerRef}
                     availableSoundSets={props.availableSoundSets}
                     soundsDefinition={props.soundsDefinition}
+                />
+                <IntroDialog
+                    isOpen={showIntroDialog}
+                    onCloseClick={() => setShowIntroDialog(false)}
                 />
             </IconsContext.Provider>
         </>

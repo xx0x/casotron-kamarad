@@ -1,0 +1,87 @@
+@import "../../styles/common.scss";
+
+@keyframes showWindow {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -20%);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+}
+
+@keyframes hideWindow {
+    0% {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -20%);
+    }
+}
+
+@keyframes showOverlay {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes hideOverlay {
+    0% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+.content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    right: auto;
+    bottom: auto;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+    max-width: 400px;
+    width:calc(100% - 2*#{$base-padding});
+    background-color: $background-color;
+    padding: 25px;
+    animation: showWindow 0.5s both;
+    outline: none;
+    box-shadow: 5px 5px 20px 0 rgba(#000, 0.2);
+    max-height: calc(100% - 2*#{$base-padding});
+    overflow: auto;
+}
+
+.wide {
+    max-width: 600px;
+}
+
+.contentClosing {
+    animation: hideWindow 0.3s both;
+}
+
+.overlay {
+    z-index: 2000;
+    background-color: rgba(#333, 0.85);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    animation: showOverlay 0.3s both;
+}
+
+.overlayClosing {
+    animation: hideOverlay 0.3s both;
+}

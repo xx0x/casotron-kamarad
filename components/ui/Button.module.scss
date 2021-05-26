@@ -59,6 +59,18 @@
     }
 }
 
+.large {
+    font-size: 15px;
+    padding: 0.9em 1.3em;
+
+    svg {
+        width: 26px;
+        height: 26px;
+        margin-bottom: -1px;
+        margin-right: 10px;
+    }
+}
+
 .primary {
     color: $primary-color;
     border-color: $primary-color;

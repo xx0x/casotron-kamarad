@@ -1,0 +1,48 @@
+@import '../styles/common.scss';
+
+.text {
+
+    h2 {
+        font-family: $header-font-family;
+        font-size: 26px;
+        text-align: center;
+        margin: 20px 0 12px 0;
+
+        &:first-child {
+            margin-top: 0;
+        }
+    }
+
+    ul {
+        list-style-type: disc;
+        padding-left: 1.25em;
+        line-height: 1.3;
+
+        li {
+            list-style-type: inherit;
+
+            &+li {
+                margin-top: 7px;
+            }
+
+            svg {
+                vertical-align: -2px;
+                margin-left: 3px;
+                margin-right: 3px;
+                width: 14px;
+                height: 14px;
+            }
+        }
+    }
+
+    a {
+        text-decoration: underline;
+    }
+}
+
+.buttons {
+    display: flex;
+    justify-content: center;
+    margin-top: 23px;
+    margin-bottom: 5px;
+}

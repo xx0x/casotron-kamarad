@@ -16,3 +16,8 @@ body {
     padding: $base-padding;
     padding-top: $appbar-height + $base-padding;
 }
+
+body.ReactModal__Body--open {
+    position: fixed;
+    overflow: hidden;
+}

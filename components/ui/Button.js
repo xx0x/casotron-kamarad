@@ -11,6 +11,7 @@ function Button(props) {
             className={classNames({
                 [style.container]: true,
                 [style.small]: props.small,
+                [style.large]: props.large,
                 [style.primary]: props.primary,
                 [style.secondary]: props.secondary,
                 [style.flashing]: props.flashing
