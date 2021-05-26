@@ -125,7 +125,9 @@ class SoundManager extends React.Component {
                 rawData[alarmsStartId + index] = wavFile.data.samples;
             }
         });
-        uploadSoundFile(this.state.port, createSoundFile(rawData));
+        setTimeout(() => {
+            uploadSoundFile(this.state.port, createSoundFile(rawData));
+        }, 500);
     }
 
     loadSelectedSet() {
@@ -165,19 +167,20 @@ class SoundManager extends React.Component {
 
     setPort(p) {
         this.setState({ port: p }, () => {
-            if (p) {
+            if (p && this.logRef.current) {
                 const reader = p.readable.getReader();
                 let readFromCom = null;
+                const decoder = new TextDecoder();
                 readFromCom = () => {
                     reader.read().then(({ done, value }) => {
                         if (done) {
                             reader.releaseLock();
                         }
-                        const txt = new TextDecoder().decode(value);
-                        if (this.logRef.current) {
-                            this.logRef.current.append(txt);
-                        }
-                        readFromCom();
+                        const txt = decoder.decode(value);
+                        this.logRef.current.append(txt);
+                        setTimeout(() => {
+                            readFromCom();
+                        }, 100);
                     }).catch(() => {
                         this.setState({ port: null });
                     });
