@@ -8,8 +8,6 @@ export default function unpackSounds(sourceBlob) {
             zipFile.file('manifest').async('string').then((manifestDataString) => {
                 const manifestData = JSON.parse(manifestDataString);
                 if (manifestData.type === 'casotron-sound-data') {
-                    console.log(manifestData);
-
                     Promise.all([
                         new Promise((alarmSoundsDataPromiseResolve) => {
                             if (manifestData.alarmSounds && manifestData.alarmSounds.length > 0) {

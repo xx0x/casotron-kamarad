@@ -26,5 +26,9 @@
         "chooseSoundBank": "Vybrat zvuky",
         "status": "Status",
         "usedSpace": "Vybrané zvuky"
+    },
+    "seo": {
+        "title": "Časotron Kamarád",
+        "description": "Aplikace Časotron Kamarád slouží pro nahrání zvuků do hodin Časotron VK49 a EH14."
     }
 }

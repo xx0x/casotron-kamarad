@@ -1,8 +1,9 @@
+import Head from 'next/head';
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useScrollbarSize from 'react-scrollbar-size';
-import IntroDialog from '../components/IntroDialog';
 import AppUnsupportedDialog from '../components/AppUnsupportedDialog';
+import IntroDialog from '../components/IntroDialog';
 import SerialDeviceInfo from '../components/SerialDeviceInfo';
 import SoundManager from '../components/SoundManager';
 import Button from '../components/ui/Button';
@@ -18,7 +19,8 @@ export async function getStaticProps() {
         props: {
             availableSoundSets: getAvailableSoundSets(),
             soundsDefinition: getSoundsDefinition(),
-            icons: getIcons()
+            icons: getIcons(),
+            baseUrl: 'https://kamarad.casotron.cz/'
         }
     };
 }
@@ -34,6 +36,16 @@ export default function Home(props) {
 
     return (
         <>
+            <Head>
+                <title>Časotron Kamarád</title>
+                <meta name="viewport" content="width=1024" />
+                <meta name="description" content={t('seo.description')} />
+                <meta property="og:url" content={props.baseUrl} />
+                <meta property="og:type" content="website" />
+                <meta property="og:title" content={t('seo.title')} />
+                <meta property="og:description" content={t('seo.description')} />
+                <meta property="og:image" content={`${props.baseUrl}og-image.jpg`} />
+            </Head>
             <IconsContext.Provider value={props.icons}>
                 <div
                     style={{
