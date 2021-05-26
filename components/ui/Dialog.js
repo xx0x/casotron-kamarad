@@ -15,13 +15,15 @@ export default function Dialog(props) {
             bodyOpenClassName="app-dialog-open"
             overlayClassName={{
                 base: style.overlay,
-                beforeClose: style.overlayClosing
+                beforeClose: style.overlayClosing,
+                afterOpen: ''
             }}
             className={{
                 base: classNames({
                     [style.content]: true,
                     [style.wide]: props.wide
                 }),
+                afterOpen: '',
                 beforeClose: style.contentClosing
             }}
             onRequestClose={() => {
