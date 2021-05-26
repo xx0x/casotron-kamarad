@@ -2,6 +2,7 @@
 import i18next from 'i18next';
 import inBrowserDownload from 'in-browser-download';
 import localforage from 'localforage';
+import log from 'loglevel';
 import moment from 'moment';
 import React from 'react';
 import { Trans } from 'react-i18next';
@@ -19,9 +20,8 @@ import style from './SoundManager.module.scss';
 import Box from './ui/Box';
 import Button from './ui/Button';
 import Dropdown from './ui/Dropdown';
-import Header from './ui/Header';
-import ConnectDeviceButton from './ConnectDeviceButton';
 import FilePickerButton from './ui/FilePickerButton';
+import Header from './ui/Header';
 import Icon from './ui/Icon';
 import Log from './ui/Log';
 import Toolbar from './ui/Toolbar';
@@ -31,6 +31,8 @@ const EMPTY_SOUND_DATA = {
     requiredSoundsData: {},
     alarmSoundsData: []
 };
+
+const BAUDRATE = 115200;
 
 class SoundManager extends React.Component {
 
@@ -50,12 +52,35 @@ class SoundManager extends React.Component {
         this.addAlarmSound = this.addAlarmSound.bind(this);
         this.isUploadEnabled = this.isUploadEnabled.bind(this);
         this.clearCurrentWork = this.clearCurrentWork.bind(this);
+        this.onConnectClick = this.onConnectClick.bind(this);
         this.setPort = this.setPort.bind(this);
         this.logRef = React.createRef();
     }
 
     componentDidMount() {
         this.loadLocally();
+    }
+
+    onConnectClick() {
+        if (!navigator.serial) {
+            log.error('🔌 Serial interface not available.');
+            return;
+        }
+
+        navigator.serial.requestPort().then((p) => {
+            log.info('🔌 Port selected.', p);
+            p.open({
+                baudRate: BAUDRATE
+            }).then(() => {
+                log.info('🔌 Port opened.', p);
+                this.setPort(p);
+            }).catch((e) => {
+                log.error('🔌 Cannot open port.', e);
+            });
+        }).catch(() => {
+            this.setPort(null);
+            log.warn('🔌 No port selected.');
+        });
     }
 
     loadSetFromFile(file) {
@@ -195,10 +220,14 @@ class SoundManager extends React.Component {
         return (
             <>
                 <Header>
-                    <ConnectDeviceButton
-                        port={this.state.port}
-                        setPort={this.setPort}
-                    />
+                    <Button
+                        disabled={!!this.state.port}
+                        primary
+                        onClick={this.onConnectClick}
+                    >
+                        <Icon name="066-usb" />
+                        <Trans i18nKey="common.connect" />
+                    </Button>
                     <Button
                         onClick={this.uploadSounds}
                         disabled={!this.isUploadEnabled()}
