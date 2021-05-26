@@ -41,7 +41,8 @@ class SoundManager extends React.Component {
         this.state = {
             ...EMPTY_SOUND_DATA,
             port: null,
-            totalData: 8 * 1024 * 1024
+            totalData: 8 * 1024 * 1024,
+            bytesToUpload: 0
         };
         this.saveToFile = this.saveToFile.bind(this);
         this.saveLocally = this.saveLocally.bind(this);
@@ -150,9 +151,9 @@ class SoundManager extends React.Component {
                 rawData[alarmsStartId + index] = wavFile.data.samples;
             }
         });
-        setTimeout(() => {
-            uploadSoundFile(this.state.port, createSoundFile(rawData));
-        }, 500);
+        const finalData = createSoundFile(rawData);
+        this.setState({ bytesToUpload: finalData.length });
+        uploadSoundFile(this.state.port, finalData);
     }
 
     loadSelectedSet() {
@@ -203,9 +204,7 @@ class SoundManager extends React.Component {
                         }
                         const txt = decoder.decode(value);
                         this.logRef.current.append(txt);
-                        setTimeout(() => {
-                            readFromCom();
-                        }, 100);
+                        readFromCom();
                     }).catch(() => {
                         this.setState({ port: null });
                     });
@@ -338,6 +337,7 @@ class SoundManager extends React.Component {
                             >
                                 <Log
                                     ref={this.logRef}
+                                    bytesToUpload={this.state.bytesToUpload}
                                 />
                             </Box>
                         </div>

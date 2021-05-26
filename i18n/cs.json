@@ -25,7 +25,8 @@
         "workFile": "Pracovní soubor",
         "chooseSoundBank": "Vybrat zvuky",
         "status": "Status",
-        "usedSpace": "Vybrané zvuky"
+        "usedSpace": "Vybrané zvuky",
+        "flashingInProgress": "Nahrávání dat..."
     },
     "seo": {
         "title": "Časotron Kamarád",

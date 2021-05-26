@@ -26,9 +26,7 @@ export default function Dialog(props) {
                 afterOpen: '',
                 beforeClose: style.contentClosing
             }}
-            onRequestClose={() => {
-                props.onCloseClick();
-            }}
+            onRequestClose={props.onCloseClick}
         >
             {props.children}
         </Modal>

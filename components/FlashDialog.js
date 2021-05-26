@@ -1,15 +1,27 @@
+import prettysize from 'prettysize';
+import { useTranslation } from 'react-i18next';
+import style from './FlashDialog.module.scss';
 import Dialog from './ui/Dialog';
+import ProgressBar from './ui/ProgressBar';
 
-export default function FlashDialog({ parsedLog }) {
-
+export default function FlashDialog({ parsedLog, bytesToUpload }) {
+    const progress = parsedLog.bytesProgress || 0;
+    const { t } = useTranslation();
     return (
         <Dialog
-            isOpen={!!parsedLog.chipEraseStart && !parsedLog.flashEnd}
+            isOpen={!!parsedLog.chipEraseStart && !parsedLog.flashEnd && bytesToUpload > 0}
         >
-            Flashing in processs...<br />
-            Approx. bytes written: {parsedLog.bytesProgress || 'not started yet'}<br />
-            Total bytes written: {parsedLog.bytesWritten || 'not finished yet'}
-
+            <div className={style.text}>
+                <div className={style.title}>
+                    {t('common.flashingInProgress')}
+                </div>
+            </div>
+            <ProgressBar
+                value={(progress / bytesToUpload)}
+            />
+            <div className={style.values}>
+                {prettysize(progress)} / {prettysize(bytesToUpload)}
+            </div>
         </Dialog>
     );
 }

@@ -42,7 +42,7 @@ export default class Log extends React.Component {
     render() {
         return (
             <>
-                <FlashDialog parsedLog={this.state.parsedLog} />
+                <FlashDialog bytesToUpload={this.props.bytesToUpload} parsedLog={this.state.parsedLog} />
                 <pre className={style.container} ref={this.logRef}>
                     {this.state.content}
                 </pre>

@@ -1,6 +1,6 @@
-import classNames from 'classnames';
 import prettysize from 'prettysize';
 import { useTranslation } from 'react-i18next';
+import ProgressBar from './ui/ProgressBar';
 import style from './UsedSpace.module.scss';
 
 export default function UsedSpace({
@@ -11,18 +11,15 @@ export default function UsedSpace({
 
     return (
         <div
-            className={classNames({
-                [style.container]: true,
-                [style.error]: used > total,
-            })}
+            className={style.container}
         >
             <div className={style.title}>
                 {t('common.usedSpace')}: {prettysize(used)} / {prettysize(total)}
             </div>
-            <div className={style.bar}>
-                <div style={{ transform: `scaleX(${used / total})` }} className={style.progress} />
-                <div className={style.value}>{Math.floor((used / total) * 100)}%</div>
-            </div>
+            <ProgressBar
+                error={used > total}
+                value={used / total}
+            />
         </div>
     );
 }
