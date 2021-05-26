@@ -1,0 +1,30 @@
+$scrollbar-background-color:#fff;
+$scrollbar-face-color:#000;
+$scrollbar-size:12px;
+
+::-webkit-scrollbar {
+    width: $scrollbar-size;
+    height: $scrollbar-size;
+}
+
+
+::-webkit-scrollbar-button {
+    width: 0;
+    height: 0;
+}
+
+::-webkit-scrollbar-thumb {
+    background: $scrollbar-face-color;
+    border: 2px solid $scrollbar-background-color;
+    border-radius: 0px;
+}
+
+
+::-webkit-scrollbar-track {
+    background: $scrollbar-background-color;
+    border-radius: 0px;
+}
+
+::-webkit-scrollbar-corner {
+    background: transparent;
+}
