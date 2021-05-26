@@ -19,6 +19,8 @@ import style from './SoundManager.module.scss';
 import Box from './ui/Box';
 import Button from './ui/Button';
 import Dropdown from './ui/Dropdown';
+import Header from './ui/Header';
+import ConnectDeviceButton from './ConnectDeviceButton';
 import FilePickerButton from './ui/FilePickerButton';
 import Icon from './ui/Icon';
 import Log from './ui/Log';
@@ -34,7 +36,11 @@ class SoundManager extends React.Component {
 
     constructor() {
         super();
-        this.state = { ...EMPTY_SOUND_DATA };
+        this.state = {
+            ...EMPTY_SOUND_DATA,
+            port: null,
+            totalData: 8 * 1024 * 1024
+        };
         this.saveToFile = this.saveToFile.bind(this);
         this.saveLocally = this.saveLocally.bind(this);
         this.loadSetFromFile = this.loadSetFromFile.bind(this);
@@ -49,32 +55,6 @@ class SoundManager extends React.Component {
 
     componentDidMount() {
         this.loadLocally();
-    }
-
-    componentDidUpdate(prevProps) {
-
-        if (this.props.port && prevProps.port !== this.props.port) {
-            const port = this.props.port;
-            const reader = port.readable.getReader();
-            let readFromCom = null;
-            readFromCom = () => {
-                reader.read().then(({ done, value }) => {
-                    if (done) {
-                        // Allow the serial port to be closed later.
-                        reader.releaseLock();
-                    }
-                    // value is a Uint8Array.
-                    const txt = new TextDecoder().decode(value);
-                    if (this.logRef.current) {
-                        this.logRef.current.append(txt);
-                    }
-                    readFromCom();
-                }).catch(() => {
-                    this.props.setPort(null);
-                });
-            };
-            readFromCom();
-        }
     }
 
     loadSetFromFile(file) {
@@ -134,8 +114,6 @@ class SoundManager extends React.Component {
         Object.entries(this.state.requiredSoundsData).forEach(([id, wavData]) => {
             const wavFile = new WaveFile(wavData);
             if (wavFile) {
-                // wavFile.toBitDepth(16);
-                // wavFile.toSampleRate(22050);
                 rawData[id] = wavFile.data.samples;
             }
         });
@@ -143,8 +121,6 @@ class SoundManager extends React.Component {
         this.state.alarmSoundsData.forEach((alarm, index) => {
             const wavFile = new WaveFile(alarm.soundData);
             if (wavFile) {
-                // wavFile.toBitDepth(16);
-                // wavFile.toSampleRate(22050);
                 rawData[alarmsStartId + index] = wavFile.data.samples;
             }
         });
@@ -168,7 +144,7 @@ class SoundManager extends React.Component {
     }
 
     isUploadEnabled() {
-        return Object.values(this.state.requiredSoundsData).length !== 0;
+        return this.state.port && Object.values(this.state.requiredSoundsData).length > 0 && this.state.alarmSoundsData.length > 0 && (this.getUsedData() <= this.getTotalData());
     }
 
     isEmpty() {
@@ -182,139 +158,177 @@ class SoundManager extends React.Component {
         );
     }
 
-    // eslint-disable-next-line class-methods-use-this
     getTotalData() {
-        return 8 * 1024 * 1024;
+        return this.state.totalData;
+    }
+
+    setPort(p) {
+        this.setState({ port: p }, () => {
+            if (p) {
+                const reader = p.readable.getReader();
+                let readFromCom = null;
+                readFromCom = () => {
+                    reader.read().then(({ done, value }) => {
+                        if (done) {
+                            reader.releaseLock();
+                        }
+                        const txt = new TextDecoder().decode(value);
+                        if (this.logRef.current) {
+                            this.logRef.current.append(txt);
+                        }
+                        readFromCom();
+                    }).catch(() => {
+                        this.setPort(null);
+                    });
+                };
+                readFromCom();
+            }
+        });
     }
 
     render() {
         const isEmpty = this.isEmpty();
         return (
-            <div className={style.container}>
-                <div className={style.boxes}>
-                    <div className={style.boxes_columns}>
-                        <Box
-                            title={<Trans i18nKey="common.availableSoundBanks" />}
-                        >
-                            <Toolbar offset>
-                                <Dropdown
-                                    options={this.props.availableSoundSets.map((set) => ({
-                                        value: set.filename,
-                                        label: set.title
-                                    }))}
-                                    flashing={isEmpty && !this.state.selectedSet}
-                                    placeholder={{ label: i18next.t('common.chooseSoundBank'), value: null }}
-                                    value={this.state.selectedSet ? this.state.selectedSet.filename : ''}
-                                    onChange={(filename) => this.setState({ selectedSet: filename ? this.props.availableSoundSets.find((x) => x.filename === filename) : null })}
+            <>
+                <Header>
+                    <ConnectDeviceButton
+                        port={this.state.port}
+                        setPort={this.setPort}
+                    />
+                    <Button
+                        onClick={this.uploadSounds}
+                        disabled={!this.isUploadEnabled()}
+                    >
+                        <Icon name="057-upload" />
+                        <Trans i18nKey="common.transferToDevice" />
+                    </Button>
+                </Header>
+                <div className={style.container}>
+                    <div className={style.boxes}>
+                        <div className={style.boxes_columns}>
+                            <Box
+                                title={<Trans i18nKey="common.availableSoundBanks" />}
+                            >
+                                <Toolbar offset>
+                                    <Dropdown
+                                        options={this.props.availableSoundSets.map((set) => ({
+                                            value: set.filename,
+                                            label: set.title
+                                        }))}
+                                        flashing={isEmpty && !this.state.selectedSet}
+                                        placeholder={{ label: i18next.t('common.chooseSoundBank'), value: null }}
+                                        value={this.state.selectedSet ? this.state.selectedSet.filename : ''}
+                                        onChange={(filename) => this.setState({ selectedSet: filename ? this.props.availableSoundSets.find((x) => x.filename === filename) : null })}
+                                    />
+                                    <Button
+                                        disabled={!this.state.selectedSet}
+                                        flashing={isEmpty && this.state.selectedSet}
+                                        onClick={this.loadSelectedSet}
+                                    >
+                                        <Trans i18nKey="common.load" />
+                                    </Button>
+                                </Toolbar>
+                            </Box>
+                            <Box
+                                title={<Trans i18nKey="common.workFile" />}
+                            >
+                                <Toolbar offset>
+                                    <Button
+                                        onClick={this.saveLocally}
+                                    >
+                                        <Icon name="018-chrome" />
+                                        <Trans i18nKey="common.saveInBrowser" />
+                                    </Button>
+                                    <Button
+                                        onClick={this.clearCurrentWork}
+                                        disabled={isEmpty}
+                                    >
+                                        <Icon name="046-trash-can" />
+                                        <Trans i18nKey="common.clearInBrowser" />
+                                    </Button>
+                                    <FilePickerButton
+                                        accept=".casotron"
+                                        onChange={this.loadSetFromFile}
+                                    >
+                                        <Icon name="110-folder" />
+                                        <Trans i18nKey="common.load" />
+                                    </FilePickerButton>
+                                    <Button
+                                        onClick={this.saveToFile}
+                                        disabled={isEmpty}
+                                    >
+                                        <Icon name="034-diskette" />
+                                        <Trans i18nKey="common.save" />
+                                    </Button>
+                                </Toolbar>
+                                <UsedSpace
+                                    used={this.getUsedData()}
+                                    total={this.getTotalData()}
                                 />
-                                <Button
-                                    disabled={!this.state.selectedSet}
-                                    flashing={isEmpty && this.state.selectedSet}
-                                    onClick={this.loadSelectedSet}
-                                >
-                                    <Trans i18nKey="common.load" />
-                                </Button>
-                            </Toolbar>
-                        </Box>
-                        <Box
-                            title={<Trans i18nKey="common.workFile" />}
-                        >
-                            <Toolbar offset>
-                                <Button
-                                    onClick={this.saveLocally}
-                                >
-                                    <Icon name="018-chrome" />
-                                    <Trans i18nKey="common.saveInBrowser" />
-                                </Button>
-                                <Button
-                                    onClick={this.clearCurrentWork}
-                                    disabled={isEmpty}
-                                >
-                                    <Icon name="046-trash-can" />
-                                    <Trans i18nKey="common.clearInBrowser" />
-                                </Button>
-                                <FilePickerButton
-                                    accept=".casotron"
-                                    onChange={this.loadSetFromFile}
-                                >
-                                    <Icon name="110-folder" />
-                                    <Trans i18nKey="common.load" />
-                                </FilePickerButton>
-                                <Button
-                                    onClick={this.saveToFile}
-                                    disabled={isEmpty}
-                                >
-                                    <Icon name="034-diskette" />
-                                    <Trans i18nKey="common.save" />
-                                </Button>
-                            </Toolbar>
-                            <UsedSpace
-                                used={this.getUsedData()}
-                                total={this.getTotalData()}
-                            />
-                        </Box>
+                            </Box>
 
-                        <Box
-                            title={<Trans i18nKey="common.melodies" />}
-                            action={(
-                                <FilePickerButton
-                                    buttonProps={{
-                                        small: true
+                            <Box
+                                title={<Trans i18nKey="common.melodies" />}
+                                action={(
+                                    <FilePickerButton
+                                        buttonProps={{
+                                            small: true
+                                        }}
+                                        accept="audio/*"
+                                        onChange={(file) => {
+                                            submitAndDecode(file).then((wavData) => this.addAlarmSound(removeExtension(file.name), wavData));
+                                        }}
+                                    >
+                                        <Icon name="112-plus" />
+                                        <Trans i18nKey="common.addSound" />
+                                    </FilePickerButton>
+                                )}
+                            >
+                                <SoundItems
+                                    className={style.items}
+                                    items={this.state.alarmSoundsData}
+                                    sortable
+                                    onMove={(oldId, newId) => {
+                                        this.setState((prevState) => ({
+                                            alarmSoundsData: arrayMoveById(prevState.alarmSoundsData, oldId, newId)
+                                        }));
                                     }}
-                                    accept="audio/*"
-                                    onChange={(file) => {
-                                        submitAndDecode(file).then((wavData) => this.addAlarmSound(removeExtension(file.name), wavData));
+                                    onItemClearClick={(item) => {
+                                        this.setState((prevState) => ({ alarmSoundsData: prevState.alarmSoundsData.filter((x) => x.id !== item.id) }));
                                     }}
-                                >
-                                    <Icon name="112-plus" />
-                                    <Trans i18nKey="common.addSound" />
-                                </FilePickerButton>
-                            )}
-                        >
-                            <SoundItems
-                                className={style.items}
-                                items={this.state.alarmSoundsData}
-                                sortable
-                                onMove={(oldId, newId) => {
-                                    this.setState((prevState) => ({
-                                        alarmSoundsData: arrayMoveById(prevState.alarmSoundsData, oldId, newId)
-                                    }));
-                                }}
-                                onItemClearClick={(item) => {
-                                    this.setState((prevState) => ({ alarmSoundsData: prevState.alarmSoundsData.filter((x) => x.id !== item.id) }));
-                                }}
-                            />
+                                />
 
-                        </Box>
+                            </Box>
 
-                        <Box
-                            title={<Trans i18nKey="common.log" />}
-                        >
-                            <Log
-                                ref={this.logRef}
-                            />
-                        </Box>
-                    </div>
-                    <div className={style.boxes_columns}>
-                        <Box
-                            title={<Trans i18nKey="common.annoucements" />}
-                        >
-                            <SoundItems
-                                className={style.items}
-                                items={this.props.soundsDefinition.required.map((item) => ({
-                                    ...item,
-                                    soundData: this.state.requiredSoundsData[item.id]
-                                }))}
-                                onItemReplaceSubmit={(item, file) => {
-                                    submitAndDecode(file).then((wavData) => {
-                                        this.updateRequiredSound(item.id, wavData);
-                                    });
-                                }}
-                            />
-                        </Box>
+                            <Box
+                                title={<Trans i18nKey="common.log" />}
+                            >
+                                <Log
+                                    ref={this.logRef}
+                                />
+                            </Box>
+                        </div>
+                        <div className={style.boxes_columns}>
+                            <Box
+                                title={<Trans i18nKey="common.annoucements" />}
+                            >
+                                <SoundItems
+                                    className={style.items}
+                                    items={this.props.soundsDefinition.required.map((item) => ({
+                                        ...item,
+                                        soundData: this.state.requiredSoundsData[item.id]
+                                    }))}
+                                    onItemReplaceSubmit={(item, file) => {
+                                        submitAndDecode(file).then((wavData) => {
+                                            this.updateRequiredSound(item.id, wavData);
+                                        });
+                                    }}
+                                />
+                            </Box>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </>
         );
     }
 

@@ -40,3 +40,19 @@
     mix-blend-mode: difference;
     filter: grayscale(1);
 }
+
+@keyframes error {
+
+    0%,
+    100% {
+        background-color: $primary-color;
+    }
+
+    50% {
+        background-color: $secondary-color;
+    }
+}
+
+.error .progress {
+    animation: error 1s infinite;
+}

@@ -1,14 +1,10 @@
 import Head from 'next/head';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useScrollbarSize from 'react-scrollbar-size';
 import AppUnsupportedDialog from '../components/AppUnsupportedDialog';
 import IntroDialog from '../components/IntroDialog';
-import SerialDeviceInfo from '../components/SerialDeviceInfo';
 import SoundManager from '../components/SoundManager';
-import Button from '../components/ui/Button';
-import Header from '../components/ui/Header';
-import Icon from '../components/ui/Icon';
 import { getIcons } from '../lib/icons';
 import { getAvailableSoundSets, getSoundsDefinition } from '../lib/sounds';
 import IconsContext from '../utils/IconsContext';
@@ -27,8 +23,6 @@ export async function getStaticProps() {
 
 export default function Home(props) {
 
-    const soundManagerRef = useRef(null);
-    const [port, setPort] = useState(null);
     const { t } = useTranslation();
     const [showIntroDialog, setShowIntroDialog] = useState(true);
     const [showUnsupportedDialog, setShowUnsupportedDialog] = useState(false);
@@ -52,23 +46,7 @@ export default function Home(props) {
                         '--app-scrollbar-width': `${scrollbarSize.width}px`
                     }}
                 >
-                    <Header>
-                        <SerialDeviceInfo
-                            port={port}
-                            setPort={setPort}
-                        />
-                        <Button
-                            onClick={() => soundManagerRef.current.uploadSounds()}
-                            disabled={!port}
-                        >
-                            <Icon name="057-upload" />
-                            {t('common.transferToDevice')}
-                        </Button>
-                    </Header>
                     <SoundManager
-                        port={port}
-                        setPort={setPort}
-                        ref={soundManagerRef}
                         availableSoundSets={props.availableSoundSets}
                         soundsDefinition={props.soundsDefinition}
                     />

@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import prettysize from 'prettysize';
 import { useTranslation } from 'react-i18next';
 import style from './UsedSpace.module.scss';
@@ -9,7 +10,12 @@ export default function UsedSpace({
     const { t } = useTranslation();
 
     return (
-        <div className={style.container}>
+        <div
+            className={classNames({
+                [style.container]: true,
+                [style.error]: used > total,
+            })}
+        >
             <div className={style.title}>
                 {t('common.usedSpace')}: {prettysize(used)} / {prettysize(total)}
             </div>
