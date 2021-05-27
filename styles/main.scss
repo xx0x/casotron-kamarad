@@ -21,4 +21,7 @@ body {
 body.app-dialog-open {
     position: fixed;
     overflow: hidden;
+    left: 0;
+    right: 0;
+    top: 0;
 }
