@@ -53,6 +53,7 @@ class SoundManager extends React.Component {
         this.addAlarmSound = this.addAlarmSound.bind(this);
         this.isUploadEnabled = this.isUploadEnabled.bind(this);
         this.clearCurrentWork = this.clearCurrentWork.bind(this);
+        this.uploadTime = this.uploadTime.bind(this);
         this.onConnectClick = this.onConnectClick.bind(this);
         this.setPort = this.setPort.bind(this);
         this.logRef = React.createRef();
@@ -214,6 +215,18 @@ class SoundManager extends React.Component {
         });
     }
 
+    uploadTime() {
+        const writer = this.state.port.writable.getWriter();
+        const time = moment().format('HHmmss').split('').map((x) => parseInt(x, 10));
+        writer.write(new Uint8Array([37])).then(() => {
+            log.debug('Starting to se time...');
+            writer.write(new Uint8Array(time)).then(() => {
+                log.debug('Time set!');
+                writer.releaseLock();
+            });
+        });
+    }
+
     render() {
         const isEmpty = this.isEmpty();
         return (
@@ -225,7 +238,14 @@ class SoundManager extends React.Component {
                         onClick={this.onConnectClick}
                     >
                         <Icon name="066-usb" />
-                        <Trans i18nKey="common.connect" />
+                        <Trans i18nKey="common.connectDevice" />
+                    </Button>
+                    <Button
+                        onClick={this.uploadTime}
+                        disabled={!this.state.port}
+                    >
+                        <Icon name="167-wall-clock" />
+                        <Trans i18nKey="common.setTime" />
                     </Button>
                     <Button
                         onClick={this.uploadSounds}

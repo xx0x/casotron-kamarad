@@ -1,7 +1,8 @@
 {
     "common": {
         "connect": "Připojit",
-        "transferToDevice": "Nahrát do zařízení",
+        "connectDevice": "Připojit zařízení",
+        "transferToDevice": "Nahrát zvuky",
         "addSound": "Přidat zvuk",
         "play": "Přehrát",
         "delete": "Odstranit",
@@ -26,7 +27,8 @@
         "chooseSoundBank": "Vybrat zvuky",
         "status": "Status",
         "usedSpace": "Vybrané zvuky",
-        "flashingInProgress": "Nahrávání dat..."
+        "flashingInProgress": "Nahrávání dat...",
+        "setTime": "Nastavit čas"
     },
     "seo": {
         "title": "Časotron Kamarád",
