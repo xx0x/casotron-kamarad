@@ -58,7 +58,7 @@
     padding: 25px;
     animation: showWindow 0.5s both;
     outline: none;
-    box-shadow: 5px 5px 20px 0 rgba(#000, 0.2);
+    box-shadow: 5px 5px 20px 0 rgba(#000, 0.4);
     max-height: calc(100% - 2*#{$base-padding});
     overflow: auto;
 }
@@ -73,7 +73,7 @@
 
 .overlay {
     z-index: 2000;
-    background-color: rgba(#333, 0.85);
+    background-color: rgba(#333, 0.97);
     position: fixed;
     top: 0;
     left: 0;
