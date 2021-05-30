@@ -19,5 +19,12 @@ export default function parseLogContents(contents) {
     matches.bytesProgress = (progressMatches && progressMatches[1]) ? parseInt(progressMatches[1], 10) : null;
     matches.headerLength = (headerLengthMatches && headerLengthMatches[1]) ? parseInt(headerLengthMatches[1], 10) : null;
 
+    const deviceMatches = contents.match(/Device: ([a-zA-Z0-9]+)/);
+    const deviceCapacityMatches = contents.match(/Capacity: ([0-9]+)/);
+    const device = {};
+    device.name = (deviceMatches && deviceMatches[1]) ? deviceMatches[1] : null;
+    device.flashCapacity = (deviceCapacityMatches && deviceCapacityMatches[1]) ? parseInt(deviceCapacityMatches[1], 10) : null;
+    matches.device = device;
+
     return matches;
 }

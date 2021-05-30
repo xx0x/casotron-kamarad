@@ -4,6 +4,7 @@ import inBrowserDownload from 'in-browser-download';
 import localforage from 'localforage';
 import log from 'loglevel';
 import moment from 'moment';
+import prettysize from 'prettysize';
 import React from 'react';
 import { Trans } from 'react-i18next';
 import { WaveFile } from 'wavefile';
@@ -33,6 +34,8 @@ const EMPTY_SOUND_DATA = {
 };
 
 const BAUDRATE = 115200;
+
+const SUPPORTED_DEVICES = ['EH14', 'VK49'];
 
 class SoundManager extends React.Component {
 
@@ -211,6 +214,12 @@ class SoundManager extends React.Component {
                     });
                 };
                 readFromCom();
+
+                // request device info
+                const writer = p.writable.getWriter();
+                writer.write(new Uint8Array([63])).then(() => {
+                    writer.releaseLock();
+                });
             }
         });
     }
@@ -232,14 +241,30 @@ class SoundManager extends React.Component {
         return (
             <>
                 <Header>
-                    <Button
-                        disabled={!!this.state.port}
-                        primary
-                        onClick={this.onConnectClick}
-                    >
-                        <Icon name="066-usb" />
-                        <Trans i18nKey="common.connectDevice" />
-                    </Button>
+                    {!this.state.device &&
+                        <Button
+                            primary
+                            onClick={this.onConnectClick}
+                        >
+                            <Icon name="066-usb" />
+                            <Trans i18nKey="common.connectDevice" />
+                        </Button>
+                    }
+                    {this.state.device &&
+                        <>
+                            <div>
+                                {this.state.device.name}<br />
+                                Capacity: {prettysize(this.state.device.flashCapacity)}<br />
+                            </div>
+                            <Button
+                                primary
+                                onClick={this.onDisconnectClick}
+                            >
+                                <Icon name="066-usb" />
+                                <Trans i18nKey="common.disconnect" />
+                            </Button>
+                        </>
+                    }
                     <Button
                         onClick={this.uploadTime}
                         disabled={!this.state.port}
@@ -357,6 +382,7 @@ class SoundManager extends React.Component {
                             >
                                 <Log
                                     ref={this.logRef}
+                                    onDeviceChange={(device) => this.setState({ device })}
                                     bytesToUpload={this.state.bytesToUpload}
                                 />
                             </Box>
