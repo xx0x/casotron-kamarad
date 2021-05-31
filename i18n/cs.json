@@ -31,7 +31,8 @@
         "flashingInProgress": "Nahrávání dat...",
         "setTime": "Nastavit čas",
         "unknownDevice": "Neznámé zařízení",
-        "memorySize": "Paměť"
+        "memorySize": "Paměť",
+        "testSound": "Otestovat"
     },
     "seo": {
         "title": "Časotron Kamarád",
