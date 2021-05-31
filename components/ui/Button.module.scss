@@ -1,5 +1,17 @@
 @import "../../styles/common.scss";
 
+@keyframes flash {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.2;
+    }
+}
+
 .container {
     font-size: 10px;
     background-color: transparent;
@@ -21,9 +33,16 @@
     position: relative;
     border-radius: 0;
 
-    &:disabled {
+    &.disabled {
         opacity: 0.4;
         cursor: not-allowed;
+    }
+
+    &.loading {
+        animation-name: flash;
+        animation-duration: 1s;
+        animation-iteration-count: infinite;
+        cursor: wait;
     }
 
     &:active {

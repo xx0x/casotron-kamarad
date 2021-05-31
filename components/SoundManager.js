@@ -12,11 +12,11 @@ import createSoundFile from '../utils/createSoundFile';
 import generateId from '../utils/generateId';
 import packSounds from '../utils/packSounds';
 import removeExtension from '../utils/removeExtension';
-import Samples from '../utils/Samples';
 import submitAndDecode from '../utils/submitAndDecode';
 import unpackSounds from '../utils/unpackSounds';
 import uploadSoundFile from '../utils/uploadSoundFile';
 import DeviceInfo from './DeviceInfo';
+import RandomSoundButton from './RandomSoundButton';
 import SoundItems from './SoundItems';
 import style from './SoundManager.module.scss';
 import Box from './ui/Box';
@@ -59,7 +59,6 @@ class SoundManager extends React.Component {
         this.uploadTime = this.uploadTime.bind(this);
         this.onConnectClick = this.onConnectClick.bind(this);
         this.setPort = this.setPort.bind(this);
-        this.sayRandomTime = this.sayRandomTime.bind(this);
         this.logRef = React.createRef();
     }
 
@@ -237,66 +236,6 @@ class SoundManager extends React.Component {
         });
     }
 
-    sayRandomTime() {
-
-        const saySample = (n) => new Promise((resolve, reject) => {
-            if (this.state.requiredSoundsData[n]) {
-                const ao = new Audio(URL.createObjectURL(new Blob([this.state.requiredSoundsData[n]])));
-                ao.addEventListener('canplaythrough', () => {
-                    ao.play();
-                    ao.addEventListener('ended', resolve);
-                });
-                return;
-            }
-            reject(new Error(`Sample not found: ${n}`));
-        });
-
-        const sayNumber = (n) => {
-            if (n < 21) {
-                return saySample(n);
-            }
-            return new Promise((resolve) => {
-                saySample(Math.floor(n / 10) * 10).then(() => {
-                    if (n % 10 !== 0) {
-                        saySample(n % 10).then(resolve);
-                        return;
-                    }
-                    resolve();
-                });
-            });
-        };
-
-        const hh = Math.floor(Math.random() * 24);
-        const mm = Math.floor(Math.random() * 60);
-
-        let hoursSample = Samples.Hours;
-        let minutesSample = Samples.Minutes;
-
-        if (hh % 10 === 1 && hh !== 11) {
-            hoursSample = Samples.Hours1;
-        } else if ((hh % 10 === 2 && hh !== 12) || (hh % 10 === 3 && hh !== 13) || (hh % 10 === 4 && hh !== 14)) {
-            hoursSample = Samples.Hours24;
-        }
-
-        if (mm % 10 === 1 && mm !== 11) {
-            minutesSample = Samples.Minutes1;
-        } else if ((mm % 10 === 2 && mm !== 12) || (mm % 10 === 3 && mm !== 13) || (mm % 10 === 4 && mm !== 14)) {
-            minutesSample = Samples.Minutes24;
-        }
-
-        saySample(Samples.Intro).then(() => {
-            sayNumber(hh).then(() => {
-                saySample(hoursSample).then(() => {
-                    sayNumber(mm).then(() => {
-                        saySample(minutesSample).then(() => {
-                            saySample(Samples.Outro);
-                        });
-                    });
-                });
-            });
-        });
-    }
-
     render() {
         const isEmpty = this.isEmpty();
         return (
@@ -456,13 +395,9 @@ class SoundManager extends React.Component {
                             <Box
                                 title={<Trans i18nKey="common.annoucements" />}
                                 action={(
-                                    <Button
-                                        small
-                                        onClick={this.sayRandomTime}
-                                    >
-                                        <Icon name="068-volume" />
-                                        <Trans i18nKey="common.testSound" />
-                                    </Button>
+                                    <RandomSoundButton
+                                        samplesData={this.state.requiredSoundsData}
+                                    />
                                 )}
                             >
                                 <SoundItems

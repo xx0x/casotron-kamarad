@@ -14,9 +14,11 @@ function Button(props) {
                 [style.large]: props.large,
                 [style.primary]: props.primary,
                 [style.secondary]: props.secondary,
+                [style.disabled]: props.disabled,
+                [style.loading]: props.loading,
                 [style.flashing]: props.flashing
             })}
-            disabled={props.disabled}
+            disabled={props.disabled || props.loading}
         >
             {props.children}
         </TagName>
