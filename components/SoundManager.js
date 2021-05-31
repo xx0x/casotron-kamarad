@@ -303,6 +303,11 @@ class SoundManager extends React.Component {
                                         <Trans i18nKey="common.load" />
                                     </Button>
                                 </Toolbar>
+                                {this.state.selectedSet &&
+                                    <div className={style.sound_set_description}>
+                                        {this.state.selectedSet.description}
+                                    </div>
+                                }
                             </Box>
                             <Box
                                 title={<Trans i18nKey="common.workFile" />}

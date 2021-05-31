@@ -1,8 +1,8 @@
 @import '../styles/common.scss';
 
 .container {
-    @include dialogOpen{
-        margin-right:var(--app-scrollbar-width);
+    @include dialogOpen {
+        margin-right: var(--app-scrollbar-width);
     }
 }
 
@@ -19,4 +19,24 @@
     gap: $base-padding;
     align-items: start;
     min-width: 0;
+}
+
+@keyframes showDescription {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+.sound_set_description {
+    font-size: 13px;
+    padding: 1px 10px 9px 10px;
+    line-height: 1.4;
+    animation-name: showDescription;
+    animation-duration: 0.3s;
+    animation-delay: 0.05s;
+    animation-fill-mode: both;
 }
