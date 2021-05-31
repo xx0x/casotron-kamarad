@@ -1,0 +1,14 @@
+@import "../styles/common.scss";
+
+.container {
+    line-height: 1.2;
+}
+
+.title {
+    font-family: $header-font-family;
+    font-weight: $header-line-height;
+}
+
+.capacity {
+    font-size: 13px;
+}

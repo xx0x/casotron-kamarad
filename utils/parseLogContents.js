@@ -24,7 +24,9 @@ export default function parseLogContents(contents) {
     const device = {};
     device.name = (deviceMatches && deviceMatches[1]) ? deviceMatches[1] : null;
     device.flashCapacity = (deviceCapacityMatches && deviceCapacityMatches[1]) ? parseInt(deviceCapacityMatches[1], 10) : null;
-    matches.device = device;
+    if (device.name && device.flashCapacity) {
+        matches.device = device;
+    }
 
     return matches;
 }

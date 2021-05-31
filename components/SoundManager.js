@@ -4,7 +4,6 @@ import inBrowserDownload from 'in-browser-download';
 import localforage from 'localforage';
 import log from 'loglevel';
 import moment from 'moment';
-import prettysize from 'prettysize';
 import React from 'react';
 import { Trans } from 'react-i18next';
 import { WaveFile } from 'wavefile';
@@ -16,6 +15,7 @@ import removeExtension from '../utils/removeExtension';
 import submitAndDecode from '../utils/submitAndDecode';
 import unpackSounds from '../utils/unpackSounds';
 import uploadSoundFile from '../utils/uploadSoundFile';
+import DeviceInfo from './DeviceInfo';
 import SoundItems from './SoundItems';
 import style from './SoundManager.module.scss';
 import Box from './ui/Box';
@@ -35,8 +35,6 @@ const EMPTY_SOUND_DATA = {
 
 const BAUDRATE = 115200;
 
-const SUPPORTED_DEVICES = ['EH14', 'VK49'];
-
 class SoundManager extends React.Component {
 
     constructor() {
@@ -44,6 +42,7 @@ class SoundManager extends React.Component {
         this.state = {
             ...EMPTY_SOUND_DATA,
             port: null,
+            device: null,
             totalData: 8 * 1024 * 1024,
             bytesToUpload: 0
         };
@@ -177,7 +176,7 @@ class SoundManager extends React.Component {
     }
 
     isUploadEnabled() {
-        return this.state.port && Object.values(this.state.requiredSoundsData).length > 0 && this.state.alarmSoundsData.length > 0 && (this.getUsedData() <= this.getTotalData());
+        return this.state.device && this.state.port && Object.values(this.state.requiredSoundsData).length > 0 && this.state.alarmSoundsData.length > 0 && (this.getUsedData() <= this.getTotalData());
     }
 
     isEmpty() {
@@ -196,7 +195,7 @@ class SoundManager extends React.Component {
     }
 
     setPort(p) {
-        this.setState({ port: p }, () => {
+        this.setState({ port: p, device: null }, () => {
             if (p && this.logRef.current) {
                 const reader = p.readable.getReader();
                 let readFromCom = null;
@@ -241,7 +240,7 @@ class SoundManager extends React.Component {
         return (
             <>
                 <Header>
-                    {!this.state.device &&
+                    {!this.state.port &&
                         <Button
                             primary
                             onClick={this.onConnectClick}
@@ -250,12 +249,11 @@ class SoundManager extends React.Component {
                             <Trans i18nKey="common.connectDevice" />
                         </Button>
                     }
-                    {this.state.device &&
+                    {this.state.port &&
                         <>
-                            <div>
-                                {this.state.device.name}<br />
-                                Capacity: {prettysize(this.state.device.flashCapacity)}<br />
-                            </div>
+                            <DeviceInfo
+                                device={this.state.device}
+                            />
                             <Button
                                 primary
                                 onClick={this.onDisconnectClick}
@@ -267,7 +265,7 @@ class SoundManager extends React.Component {
                     }
                     <Button
                         onClick={this.uploadTime}
-                        disabled={!this.state.port}
+                        disabled={!this.state.port || !this.state.device}
                     >
                         <Icon name="167-wall-clock" />
                         <Trans i18nKey="common.setTime" />

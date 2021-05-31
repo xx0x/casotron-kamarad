@@ -36,7 +36,7 @@ export default class Log extends React.Component {
         const parsedLog = parseLogContents(this.state.content);
         if (!deepEqual(parsedLog, this.state.parsedLog)) {
             this.setState({ parsedLog });
-            if (parsedLog.device && parsedLog.device.name) {
+            if (parsedLog.device) {
                 this.props.onDeviceChange(parsedLog.device);
             }
         }
