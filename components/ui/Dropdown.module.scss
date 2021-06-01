@@ -43,8 +43,8 @@
     background-position: top 50% right 6px;
 }
 
-.flashing {
+.glowing {
     :global {
-        animation: flashing 1.5s infinite;
+        animation: glowing 1.5s infinite;
     }
 }

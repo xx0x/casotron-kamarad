@@ -291,14 +291,14 @@ class SoundManager extends React.Component {
                                             value: set.filename,
                                             label: set.title
                                         }))}
-                                        flashing={isEmpty && !this.state.selectedSet}
+                                        glowing={isEmpty && !this.state.selectedSet}
                                         placeholder={{ label: i18next.t('common.chooseSoundBank'), value: null }}
                                         value={this.state.selectedSet ? this.state.selectedSet.filename : ''}
                                         onChange={(filename) => this.setState({ selectedSet: filename ? this.props.availableSoundSets.find((x) => x.filename === filename) : null })}
                                     />
                                     <Button
                                         disabled={!this.state.selectedSet}
-                                        flashing={isEmpty && this.state.selectedSet}
+                                        glowing={isEmpty && this.state.selectedSet}
                                         onClick={this.loadSelectedSet}
                                     >
                                         <Trans i18nKey="common.load" />

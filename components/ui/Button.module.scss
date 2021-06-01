@@ -40,7 +40,7 @@
 
     &.loading {
         animation-name: flash;
-        animation-duration: 1s;
+        animation-duration: 0.6s;
         animation-iteration-count: infinite;
         cursor: wait;
     }
@@ -62,9 +62,9 @@
     }
 }
 
-.flashing {
+.glowing {
     :global {
-        animation: flashing 1.5s infinite;
+        animation: glowing 1.5s infinite;
     }
 }
 

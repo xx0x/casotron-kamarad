@@ -10,6 +10,8 @@ import Toolbar from './ui/Toolbar';
 const SoundItem = forwardRef((props, ref) => {
 
     const [audioObj, setAudioObj] = useState(null);
+    const [playing, setPlaying] = useState(false);
+
     useEffect(() => {
         setAudioObj(null);
     }, [props.soundData]);
@@ -55,14 +57,18 @@ const SoundItem = forwardRef((props, ref) => {
                 <Button
                     disabled={!props.soundData}
                     small
+                    loading={playing}
                     onClick={() => {
                         if (audioObj) {
                             audioObj.pause();
                             audioObj.currentTime = 0;
+                            setPlaying(true);
                             audioObj.play();
                         } else {
                             const ao = new Audio(URL.createObjectURL(new Blob([props.soundData])));
                             ao.play();
+                            setPlaying(true);
+                            ao.onended = () => setPlaying(false);
                             setAudioObj(ao);
                         }
                     }}

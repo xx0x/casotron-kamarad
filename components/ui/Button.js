@@ -16,7 +16,7 @@ function Button(props) {
                 [style.secondary]: props.secondary,
                 [style.disabled]: props.disabled,
                 [style.loading]: props.loading,
-                [style.flashing]: props.flashing
+                [style.glowing]: props.glowing
             })}
             disabled={props.disabled || props.loading}
         >
