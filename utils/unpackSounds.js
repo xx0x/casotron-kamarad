@@ -1,5 +1,6 @@
 import JSZip from 'jszip';
 import omit from 'lodash.omit';
+import magic from './magic';
 
 export default function unpackSounds(sourceBlob) {
 
@@ -16,7 +17,7 @@ export default function unpackSounds(sourceBlob) {
                                         zipFile.file(sound.file).async('uint8array').then((soundData) => {
                                             resolve({
                                                 ...omit(sound, 'file'),
-                                                soundData
+                                                soundData: magic(soundData)
                                             });
                                         });
                                         return;
@@ -36,7 +37,7 @@ export default function unpackSounds(sourceBlob) {
                                         zipFile.file(filename).async('uint8array').then((soundData) => {
                                             resolve({
                                                 id,
-                                                soundData
+                                                soundData: magic(soundData)
                                             });
                                         });
                                         return;

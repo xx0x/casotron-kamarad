@@ -1,5 +1,6 @@
 import JSZip from 'jszip';
 import omit from 'lodash.omit';
+import magic from './magic';
 import generateId from './generateId';
 
 export default function packSounds(requiredSoundsData, alarmSoundsData) {
@@ -12,12 +13,12 @@ export default function packSounds(requiredSoundsData, alarmSoundsData) {
             file
         };
         meta.alarmSounds.push(metaObj);
-        zipFile.file(file, obj.soundData);
+        zipFile.file(file, magic(obj.soundData));
     });
     Object.entries(requiredSoundsData).forEach(([id, soundData]) => {
         const file = generateId();
         meta.requiredSounds[id] = file;
-        zipFile.file(file, soundData);
+        zipFile.file(file, magic(soundData));
     });
     zipFile.file('manifest', JSON.stringify(meta));
     return zipFile.generateAsync({ type: 'blob' });
